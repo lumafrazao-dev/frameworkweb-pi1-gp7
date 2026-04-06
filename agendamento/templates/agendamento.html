@@ -2,7 +2,6 @@
 <html>
 <head>
     <title>Gaslu Funilaria</title>
-
     <style>
         body { font-family: Arial; padding: 20px; }
         input, button { margin: 5px; padding: 8px; }
@@ -10,42 +9,31 @@
         .selecionado { background-color: lightgreen; }
     </style>
 </head>
-
 <body>
-
 <h1> Agendar Orçamento</h1>
 <br><br>
 <form method="POST">
     {% csrf_token %}
-
     👤 Nome: <input type="text" name="nome" placeholder="Nome"
            value="{{ dados.nome|default:'' }}"
            pattern="[A-Za-zÀ-ú ]+" required><br>
-
     📞 Tel.: <input type="text" name="telefone" id="telefone"
            placeholder="(00) 00000-0000"
            value="{{ dados.telefone|default:'' }}"
            maxlength="15" required><br>
-
     🚗 Placa: <input type="text" name="placa" id="placa"
            placeholder="ABC1234"
            value="{{ dados.placa|default:'' }}"
            maxlength="7" required><br>
-
     📆 Data: <input type="date" name="data" id="data"
            value="{{ dados.data|default:'' }}"
            required><br>
-
     <input type="hidden" name="horario" id="horarioForm">
-
     ⌚ Horário: <button type="button" onclick="buscarHorarios()">Selecionar</button>
 </form>
-
 <hr>
-
 {% if horarios %}
 <h3>Horários disponíveis:</h3>
-
 <div id="horarios">
     {% for h in horarios %}
         <button type="button" class="horario-btn" data-horario="{{ h }}">
@@ -53,107 +41,79 @@
         </button>
     {% endfor %}
 </div>
-
 <input type="hidden" id="horarioSelecionado">
-
 <div id="confirmacao" style="display:none; margin-top:20px;">
     <p><strong>Confirmar agendamento?</strong></p>
     <button type="button" onclick="voltar()">Voltar</button>
     <button type="button" onclick="confirmar()">Confirmar</button>
 </div>
 {% endif %}
-
 <script>
-
 /* TEL */
 document.getElementById("telefone").addEventListener("input", function(e) {
     let v = e.target.value.replace(/\D/g, "").slice(0,11);
-
     if (v.length > 6)
         v = v.replace(/(\d{2})(\d{5})(\d+)/, "($1) $2-$3");
     else if (v.length > 2)
         v = v.replace(/(\d{2})(\d+)/, "($1) $2");
-
     e.target.value = v;
 });
-
 /* PLACA */
 document.getElementById("placa").addEventListener("input", function(e) {
     e.target.value = e.target.value.toUpperCase();
 });
-
 /* BLOQUEAR DATA */
 const feriados = ["2026-01-01", "2026-12-25"];
-
 document.getElementById("data").addEventListener("change", function(e) {
     let valor = e.target.value;
     let data = new Date(valor + "T00:00:00");
-
     if (data.getDay() === 0 || feriados.includes(valor)) {
         alert("Domingos e feriados indisponíveis");
         e.target.value = "";
     }
 });
-
 /* BUSCA HORÁRIOS */
 function buscarHorarios() {
     document.getElementById("horarioForm").value = "";
     document.querySelector("form").submit();
 }
-
 /* SELEÇÃO DE HORÁRIO */
 const botoes = document.querySelectorAll(".horario-btn");
 const confirmacao = document.getElementById("confirmacao");
 const inputHorario = document.getElementById("horarioSelecionado");
-
-botoes.forEach(btn => {
+    botoes.forEach(btn => {
     btn.addEventListener("click", function() {
-
-        botoes.forEach(b => b.classList.remove("selecionado"));
-
+    botoes.forEach(b => b.classList.remove("selecionado"));
         this.classList.add("selecionado");
-
         let horario = this.dataset.horario;
         inputHorario.value = horario;
-
         confirmacao.style.display = "block";
     });
 });
-
 /* VOLTAR */
 function voltar() {
     confirmacao.style.display = "none";
 }
-
 function confirmar() {
-
 let nome = document.querySelector('[name="nome"]').value;
 let telefone = document.querySelector('[name="telefone"]').value;
 let placa = document.querySelector('[name="placa"]').value;
 let data = document.getElementById("data").value;
 let horario = document.getElementById("horarioSelecionado").value;
-
 if (!horario) {
     alert("Selecione um horário");
     return;
 }
-
 /*mensagem*/
 let mensagem = `🚗 NOVO AGENDAMENTO\n\nNome: ${nome}\nTelefone: ${telefone}\nPlaca: ${placa}\nData: ${data}\nHorário: ${horario}`;
-
 let numeroOficina = "5513991403058"; // seu número
-
 let url = `https://wa.me/${numeroOficina}?text=${encodeURIComponent(mensagem)}`;
-
 window.open(url, "_blank");
-
 document.getElementById("horarioForm").value = horario;
-
 setTimeout(() => {
     document.querySelector("form").submit();
 }, 300);
 }
 </script>
-
 </body>
 </html>
