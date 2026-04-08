@@ -49,7 +49,7 @@
 </div>
 {% endif %}
 <script>
-/* TEL */
+/* tel */
 document.getElementById("telefone").addEventListener("input", function(e) {
     let v = e.target.value.replace(/\D/g, "").slice(0,11);
     if (v.length > 6)
@@ -58,11 +58,11 @@ document.getElementById("telefone").addEventListener("input", function(e) {
         v = v.replace(/(\d{2})(\d+)/, "($1) $2");
     e.target.value = v;
 });
-/* PLACA */
+/* Placa */
 document.getElementById("placa").addEventListener("input", function(e) {
     e.target.value = e.target.value.toUpperCase();
 });
-/* BLOQUEAR DATA */
+/* block data */
 const feriados = ["2026-01-01", "2026-12-25"];
 document.getElementById("data").addEventListener("change", function(e) {
     let valor = e.target.value;
@@ -72,12 +72,12 @@ document.getElementById("data").addEventListener("change", function(e) {
         e.target.value = "";
     }
 });
-/* BUSCA HORÁRIOS */
+/* buscar hrs */
 function buscarHorarios() {
     document.getElementById("horarioForm").value = "";
     document.querySelector("form").submit();
 }
-/* SELEÇÃO DE HORÁRIO */
+/* Select Hrs */
 const botoes = document.querySelectorAll(".horario-btn");
 const confirmacao = document.getElementById("confirmacao");
 const inputHorario = document.getElementById("horarioSelecionado");
@@ -90,7 +90,7 @@ const inputHorario = document.getElementById("horarioSelecionado");
         confirmacao.style.display = "block";
     });
 });
-/* VOLTAR */
+/* voltar*/
 function voltar() {
     confirmacao.style.display = "none";
 }
@@ -104,9 +104,9 @@ if (!horario) {
     alert("Selecione um horário");
     return;
 }
-/*mensagem*/
+/*mensagem automatica do whats*/
 let mensagem = `🚗 NOVO AGENDAMENTO\n\nNome: ${nome}\nTelefone: ${telefone}\nPlaca: ${placa}\nData: ${data}\nHorário: ${horario}`;
-let numeroOficina = "5513991403058"; // seu número
+let numeroOficina = "5513991403058"; // num de direcionamento whats
 let url = `https://wa.me/${numeroOficina}?text=${encodeURIComponent(mensagem)}`;
 window.open(url, "_blank");
 document.getElementById("horarioForm").value = horario;
