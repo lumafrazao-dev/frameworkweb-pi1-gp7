@@ -1,119 +1,558 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-    <title>Gaslu Funilaria</title>
-    <style>
-        body { font-family: Arial; padding: 20px; }
-        input, button { margin: 5px; padding: 8px; }
-        button { cursor: pointer; }
-        .selecionado { background-color: lightgreen; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gaslu Funilaria — Agendar Orçamento</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #F5F3EE;
+      --surface: #FFFFFF;
+      --surface2: #F0EDE7;
+      --border: rgba(0,0,0,0.10);
+      --border-strong: rgba(0,0,0,0.18);
+      --ink: #1A1814;
+      --ink2: #6B6760;
+      --ink3: #9E9B97;
+      --accent: #1A1814;
+      --accent-text: #FFFFFF;
+      --slot-ok: #FFFFFF;
+      --slot-sel: #1A1814;
+      --slot-sel-text: #FFFFFF;
+      --slot-off: #F0EDE7;
+      --slot-off-text: #C5C2BD;
+      --green: #2D6A4F;
+      --green-bg: #D8F3DC;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 2rem 1rem 4rem;
+    }
+
+    .page {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      animation: fadeUp 0.5s ease both;
+    }
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--ink);
+      color: var(--accent-text);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 40px;
+      margin-bottom: 1rem;
+    }
+    .header-badge svg { width: 14px; height: 14px; }
+    .header h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 32px;
+      font-weight: 400;
+      color: var(--ink);
+      letter-spacing: -0.5px;
+      line-height: 1.15;
+    }
+    .header p {
+      font-size: 15px;
+      color: var(--ink2);
+      margin-top: 8px;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      animation: fadeUp 0.5s ease both;
+    }
+    .card:nth-child(2) { animation-delay: 0.07s; }
+    .card:nth-child(3) { animation-delay: 0.14s; }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.25rem;
+    }
+    .step-num {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: var(--ink);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 500;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .card-header span {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink2);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* Fields */
+    .field { margin-bottom: 1rem; }
+    .field:last-child { margin-bottom: 0; }
+    .field label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink2);
+      margin-bottom: 6px;
+    }
+    .field label svg { width: 13px; height: 13px; opacity: 0.6; }
+    .field input {
+      width: 100%;
+      padding: 11px 13px;
+      font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      border: 0.5px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      background: var(--surface2);
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+    }
+    .field input:focus {
+      background: var(--surface);
+      border-color: var(--ink);
+      box-shadow: 0 0 0 3px rgba(26,24,20,0.07);
+    }
+    .field input::placeholder { color: var(--ink3); }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    /* Buttons */
+    .btn-primary {
+      width: 100%;
+      padding: 13px;
+      background: var(--ink);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 1.25rem;
+      letter-spacing: 0.01em;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .btn-primary:hover { opacity: 0.82; }
+    .btn-primary:active { transform: scale(0.99); }
+
+    /* Time slots */
+    .date-label {
+      font-size: 13px;
+      color: var(--ink2);
+      margin-bottom: 1rem;
+    }
+    .date-label strong { color: var(--ink); font-weight: 500; }
+    .slots-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .slot {
+      padding: 11px 4px;
+      text-align: center;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      border: 0.5px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      color: var(--ink);
+      background: var(--slot-ok);
+      transition: all 0.12s;
+    }
+    .slot:hover { background: var(--surface2); }
+    .slot.selected {
+      background: var(--slot-sel);
+      color: var(--slot-sel-text);
+      border-color: var(--slot-sel);
+    }
+    .slot.unavailable {
+      background: var(--slot-off);
+      color: var(--slot-off-text);
+      border-color: var(--border);
+      cursor: not-allowed;
+      font-weight: 400;
+    }
+
+    /* Confirm box */
+    .confirm-box {
+      margin-top: 1.25rem;
+      padding: 1rem 1.25rem;
+      background: var(--surface2);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      animation: fadeUp 0.25s ease both;
+    }
+    .confirm-box p {
+      font-size: 14px;
+      color: var(--ink2);
+      margin-bottom: 12px;
+    }
+    .confirm-box p strong { color: var(--ink); font-weight: 500; }
+    .confirm-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .btn-ghost {
+      padding: 10px;
+      background: transparent;
+      border: 0.5px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--ink);
+      transition: background 0.12s;
+    }
+    .btn-ghost:hover { background: var(--border); }
+    .btn-confirm {
+      padding: 10px;
+      background: var(--ink);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn-confirm:hover { opacity: 0.82; }
+
+    /* Success */
+    .success-card {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      display: none;
+      animation: fadeUp 0.4s ease both;
+    }
+    .success-icon {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: var(--green-bg);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1rem;
+    }
+    .success-icon svg { width: 22px; height: 22px; color: var(--green); }
+    .success-card h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      font-weight: 400;
+      margin-bottom: 8px;
+    }
+    .success-card p { font-size: 14px; color: var(--ink2); }
+
+    /* Hidden */
+    .hidden { display: none !important; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Django messages */
+    .messages { list-style: none; margin-bottom: 1rem; }
+    .messages li {
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+    .messages li.success { background: var(--green-bg); color: var(--green); }
+    .messages li.error { background: #FDECEA; color: #C0392B; }
+    .messages li.warning { background: #FEF9E7; color: #7D6608; }
+    .messages li.info { background: #EAF4FD; color: #1A5276; }
+  </style>
 </head>
 <body>
-<h1> Agendar Orçamento</h1>
-<br><br>
-<form method="POST">
-    {% csrf_token %}
-    👤 Nome: <input type="text" name="nome" placeholder="Nome"
-           value="{{ dados.nome|default:'' }}"
-           pattern="[A-Za-zÀ-ú ]+" required><br>
-    📞 Tel.: <input type="text" name="telefone" id="telefone"
-           placeholder="(00) 00000-0000"
-           value="{{ dados.telefone|default:'' }}"
-           maxlength="15" required><br>
-    🚗 Placa: <input type="text" name="placa" id="placa"
-           placeholder="ABC1234"
-           value="{{ dados.placa|default:'' }}"
-           maxlength="7" required><br>
-    📆 Data: <input type="date" name="data" id="data"
-           value="{{ dados.data|default:'' }}"
-           required><br>
-    <input type="hidden" name="horario" id="horarioForm">
-    ⌚ Horário: <button type="button" onclick="buscarHorarios()">Selecionar</button>
-</form>
-<hr>
-{% if horarios %}
-<h3>Horários disponíveis:</h3>
-<div id="horarios">
-    {% for h in horarios %}
-        <button type="button" class="horario-btn" data-horario="{{ h }}">
-            {{ h }}
-        </button>
+<div class="page">
+
+  <header class="header">
+    <div class="header-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 17h1v1a1 1 0 0 0 2 0v-1h12v1a1 1 0 0 0 2 0v-1h1v-4l-2-6H5l-2 6v4z"/>
+        <circle cx="7.5" cy="17" r="1.5" fill="currentColor" stroke="none"/>
+        <circle cx="16.5" cy="17" r="1.5" fill="currentColor" stroke="none"/>
+      </svg>
+      Funilaria & Pintura
+    </div>
+    <h1>Gaslu Funilaria</h1>
+    <p>Agende seu orçamento de forma rápida e prática</p>
+  </header>
+
+  {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+      <li class="{{ message.tags }}">{{ message }}</li>
     {% endfor %}
+  </ul>
+  {% endif %}
+
+  <form method="POST" id="formAgendamento">
+    {% csrf_token %}
+
+    <div class="card">
+      <div class="card-header">
+        <div class="step-num">1</div>
+        <span>Seus dados</span>
+      </div>
+
+      <div class="field">
+        <label>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+          </svg>
+          Nome completo
+        </label>
+        <input type="text" name="nome" id="nome"
+               placeholder="Ex: João Silva"
+               value="{{ dados.nome|default:'' }}"
+               pattern="[A-Za-zÀ-ú ]+" required>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 3.08 5.18 2 2 0 0 1 5.09 3h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L9.09 10a16 16 0 0 0 6.91 6.91l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+            Telefone
+          </label>
+          <input type="text" name="telefone" id="telefone"
+                 placeholder="(13) 99999-0000"
+                 value="{{ dados.telefone|default:'' }}"
+                 maxlength="15" required>
+        </div>
+        <div class="field">
+          <label>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="7" width="20" height="10" rx="2"/>
+              <path d="M7 12h2M11 12h2M15 12h2" stroke-linecap="round"/>
+            </svg>
+            Placa
+          </label>
+          <input type="text" name="placa" id="placa"
+                 placeholder="ABC1234"
+                 value="{{ dados.placa|default:'' }}"
+                 maxlength="7" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <path d="M16 2v4M8 2v4M3 10h18"/>
+          </svg>
+          Data preferida
+        </label>
+        <input type="date" name="data" id="data"
+               value="{{ dados.data|default:'' }}" required>
+      </div>
+
+      <input type="hidden" name="horario" id="horarioForm">
+      <button type="button" class="btn-primary" onclick="buscarHorarios()">
+        Ver horários disponíveis
+      </button>
+    </div>
+  </form>
+
+  <!-- Seção de horários (aparece após submissão Django ou via JS) -->
+  <div id="secaoHorarios" {% if not horarios %}class="hidden"{% endif %}>
+    <div class="card" style="animation-delay:0.1s">
+      <div class="card-header">
+        <div class="step-num">2</div>
+        <span>Horário disponível</span>
+      </div>
+
+      {% if dados.data %}
+      <p class="date-label" id="dataLabel">
+        <strong>{{ dados.data }}</strong>
+      </p>
+      {% else %}
+      <p class="date-label" id="dataLabel"></p>
+      {% endif %}
+
+      <div class="slots-grid" id="slotsGrid">
+        {% if horarios %}
+          {% for h in horarios %}
+            <button type="button" class="slot horario-btn" data-horario="{{ h }}">{{ h }}</button>
+          {% endfor %}
+        {% endif %}
+      </div>
+
+      <div class="confirm-box hidden" id="confirmBox">
+        <p>Confirmar agendamento para <strong id="horarioLabel"></strong>?</p>
+        <div class="confirm-actions">
+          <button type="button" class="btn-ghost" onclick="voltar()">Cancelar</button>
+          <button type="button" class="btn-confirm" onclick="confirmar()">Confirmar e enviar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cartão de sucesso (exibido pelo Django quando agendamento salvo) -->
+  {% if agendamento_confirmado %}
+  <div class="success-card" style="display:block">
+    <div class="success-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+    </div>
+    <h2>Agendamento confirmado!</h2>
+    <p>Você receberá a confirmação via WhatsApp em breve.</p>
+  </div>
+  {% endif %}
+
+
 </div>
-<input type="hidden" id="horarioSelecionado">
-<div id="confirmacao" style="display:none; margin-top:20px;">
-    <p><strong>Confirmar agendamento?</strong></p>
-    <button type="button" onclick="voltar()">Voltar</button>
-    <button type="button" onclick="confirmar()">Confirmar</button>
-</div>
-{% endif %}
+
 <script>
-/* tel */
-document.getElementById("telefone").addEventListener("input", function(e) {
-    let v = e.target.value.replace(/\D/g, "").slice(0,11);
-    if (v.length > 6)
-        v = v.replace(/(\d{2})(\d{5})(\d+)/, "($1) $2-$3");
-    else if (v.length > 2)
-        v = v.replace(/(\d{2})(\d+)/, "($1) $2");
+  /* ------- Máscaras ------- */
+  document.getElementById("telefone").addEventListener("input", function(e) {
+    let v = e.target.value.replace(/\D/g, "").slice(0, 11);
+    if (v.length > 6) v = v.replace(/(\d{2})(\d{5})(\d+)/, "($1) $2-$3");
+    else if (v.length > 2) v = v.replace(/(\d{2})(\d+)/, "($1) $2");
     e.target.value = v;
-});
-/* Placa */
-document.getElementById("placa").addEventListener("input", function(e) {
-    e.target.value = e.target.value.toUpperCase();
-});
-/* block data */
-const feriados = ["2026-01-01", "2026-12-25"];
-document.getElementById("data").addEventListener("change", function(e) {
-    let valor = e.target.value;
-    let data = new Date(valor + "T00:00:00");
-    if (data.getDay() === 0 || feriados.includes(valor)) {
-        alert("Domingos e feriados indisponíveis");
-        e.target.value = "";
+  });
+
+  document.getElementById("placa").addEventListener("input", function(e) {
+    e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+  });
+
+  /* ------- Bloqueio de datas ------- */
+  const feriados = ["2026-01-01", "2026-04-21", "2026-05-01", "2026-09-07",
+                    "2026-10-12", "2026-11-02", "2026-11-15", "2026-12-25"];
+
+  document.getElementById("data").addEventListener("change", function(e) {
+    const val = e.target.value;
+    const d = new Date(val + "T00:00:00");
+    if (d.getDay() === 0 || feriados.includes(val)) {
+      alert("Domingos e feriados não estão disponíveis para agendamento.");
+      e.target.value = "";
     }
-});
-/* buscar hrs */
-function buscarHorarios() {
+  });
+
+  /* ------- Buscar horários (submete o form ao Django) ------- */
+  function buscarHorarios() {
+    const nome     = document.getElementById("nome").value.trim();
+    const telefone = document.getElementById("telefone").value.trim();
+    const placa    = document.getElementById("placa").value.trim();
+    const data     = document.getElementById("data").value;
+
+    if (!nome || !telefone || !placa || !data) {
+      alert("Preencha todos os campos antes de buscar os horários.");
+      return;
+    }
+
     document.getElementById("horarioForm").value = "";
-    document.querySelector("form").submit();
-}
-/* Select Hrs */
-const botoes = document.querySelectorAll(".horario-btn");
-const confirmacao = document.getElementById("confirmacao");
-const inputHorario = document.getElementById("horarioSelecionado");
+    document.getElementById("formAgendamento").submit();
+  }
+
+  /* ------- Seleção de horário (após retorno do Django com horarios no contexto) ------- */
+  function initSlots() {
+    const botoes = document.querySelectorAll(".horario-btn");
     botoes.forEach(btn => {
-    btn.addEventListener("click", function() {
-    botoes.forEach(b => b.classList.remove("selecionado"));
-        this.classList.add("selecionado");
-        let horario = this.dataset.horario;
-        inputHorario.value = horario;
-        confirmacao.style.display = "block";
+      btn.addEventListener("click", function() {
+        botoes.forEach(b => b.classList.remove("selected"));
+        this.classList.add("selected");
+        document.getElementById("horarioSelecionado") &&
+          (document.getElementById("horarioSelecionado").value = this.dataset.horario);
+        document.getElementById("horarioLabel").textContent = this.dataset.horario;
+        document.getElementById("confirmBox").classList.remove("hidden");
+      });
     });
-});
-/* voltar*/
-function voltar() {
-    confirmacao.style.display = "none";
-}
-function confirmar() {
-let nome = document.querySelector('[name="nome"]').value;
-let telefone = document.querySelector('[name="telefone"]').value;
-let placa = document.querySelector('[name="placa"]').value;
-let data = document.getElementById("data").value;
-let horario = document.getElementById("horarioSelecionado").value;
-if (!horario) {
-    alert("Selecione um horário");
-    return;
-}
-/*mensagem automatica do whats*/
-let mensagem = `🚗 NOVO AGENDAMENTO\n\nNome: ${nome}\nTelefone: ${telefone}\nPlaca: ${placa}\nData: ${data}\nHorário: ${horario}`;
-let numeroOficina = "5513991403058"; // num de direcionamento whats
-let url = `https://wa.me/${numeroOficina}?text=${encodeURIComponent(mensagem)}`;
-window.open(url, "_blank");
-document.getElementById("horarioForm").value = horario;
-setTimeout(() => {
-    document.querySelector("form").submit();
-}, 300);
-}
+
+    // Formata label da data
+    const dataInput = document.getElementById("data").value;
+    if (dataInput) {
+      const [y, m, d] = dataInput.split("-");
+      const dateObj = new Date(+y, +m - 1, +d);
+      const opts = { weekday: "long", day: "2-digit", month: "long", year: "numeric" };
+      document.getElementById("dataLabel").innerHTML =
+        "<strong>" + dateObj.toLocaleDateString("pt-BR", opts) + "</strong>";
+    }
+  }
+
+  // Input hidden para horário selecionado (complementa o hidden do form)
+  (function() {
+    const inp = document.createElement("input");
+    inp.type = "hidden";
+    inp.id = "horarioSelecionado";
+    document.body.appendChild(inp);
+  })();
+
+  function voltar() {
+    document.getElementById("confirmBox").classList.add("hidden");
+    document.querySelectorAll(".horario-btn").forEach(b => b.classList.remove("selected"));
+    document.getElementById("horarioSelecionado").value = "";
+  }
+
+  function confirmar() {
+    const nome     = document.getElementById("nome").value;
+    const telefone = document.getElementById("telefone").value;
+    const placa    = document.getElementById("placa").value;
+    const data     = document.getElementById("data").value;
+    const horario  = document.getElementById("horarioSelecionado").value;
+
+    if (!horario) { alert("Selecione um horário antes de confirmar."); return; }
+
+    // Mensagem automática para o WhatsApp da oficina
+    const [y, m, d] = data.split("-");
+    const dataFmt = new Date(+y, +m - 1, +d).toLocaleDateString("pt-BR");
+    const msg = `🚗 NOVO AGENDAMENTO\n\nNome: ${nome}\nTelefone: ${telefone}\nPlaca: ${placa}\nData: ${dataFmt}\nHorário: ${horario}`;
+    const numero = "5513991403058";
+    window.open(`https://wa.me/${numero}?text=${encodeURIComponent(msg)}`, "_blank");
+
+    // Submete ao Django para salvar o agendamento
+    document.getElementById("horarioForm").value = horario;
+    setTimeout(() => document.getElementById("formAgendamento").submit(), 300);
+  }
+
+  /* Inicializa slots se já existirem no DOM (retorno Django) */
+  document.addEventListener("DOMContentLoaded", function() {
+    if (document.querySelectorAll(".horario-btn").length) {
+      document.getElementById("secaoHorarios").classList.remove("hidden");
+      initSlots();
+    }
+  });
 </script>
 </body>
 </html>
