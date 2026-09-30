@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,7 +26,11 @@ SECRET_KEY = 'django-insecure-3p5z&ukyox&v)&(6x42be7uz!k#tes9)(_mdq2k+q=zi#wpf54
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['web-production-f6eed.up.railway.app']
+ALLOWED_HOSTS = [
+    'web-production-f6eed.up.railway.app',
+    '127.0.0.1',
+    'localhost',
+]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://web-production-f6eed.up.railway.app"
@@ -119,3 +124,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
+GEMINI_MODEL = os.environ.get('GEMINI_MODEL', 'gemini-2.5-flash')

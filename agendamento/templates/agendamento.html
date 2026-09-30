@@ -166,6 +166,92 @@
     }
     .btn-primary:hover { opacity: 0.82; }
     .btn-primary:active { transform: scale(0.99); }
+    .btn-secondary {
+      width: 100%;
+      padding: 12px;
+      background: transparent;
+      color: var(--ink);
+      border: 0.5px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .voice-dialog {
+      width: min(420px, calc(100% - 2rem));
+      position: fixed;
+      inset: 50% auto auto 50%;
+      margin: 0;
+      transform: translate(-50%, -50%);
+      border: none;
+      border-radius: var(--radius);
+      padding: 0;
+      color: var(--ink);
+      background: var(--surface);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.22);
+    }
+    .voice-dialog::backdrop { background: rgba(26, 24, 20, 0.5); }
+    .voice-dialog-content { position: relative; padding: 1.5rem; }
+    .voice-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 50%;
+      background: transparent;
+      color: var(--ink2);
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .voice-close:hover { background: var(--surface2); color: var(--ink); }
+    .voice-dialog h2 {
+      font-family: 'DM Serif Display', serif;
+      font-weight: 400;
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    .voice-dialog p { color: var(--ink2); font-size: 14px; line-height: 1.5; }
+    .voice-status { margin: 1rem 0; min-height: 2.5em; }
+    .voice-preview {
+      display: none;
+      margin: 1rem 0;
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      background: var(--surface2);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .voice-listening {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      min-height: 42px;
+      margin: 1rem 0;
+      color: var(--green);
+    }
+    .voice-listening[hidden] { display: none; }
+    .voice-listening span {
+      width: 5px;
+      height: 14px;
+      border-radius: 99px;
+      background: currentColor;
+      animation: sound-wave 0.8s ease-in-out infinite alternate;
+    }
+    .voice-listening span:nth-child(2) { animation-delay: 0.15s; }
+    .voice-listening span:nth-child(3) { animation-delay: 0.3s; }
+    .voice-listening span:nth-child(4) { animation-delay: 0.45s; }
+    .voice-listening span:nth-child(5) { animation-delay: 0.6s; }
+    @keyframes sound-wave {
+      from { transform: scaleY(0.55); }
+      to { transform: scaleY(2.2); }
+    }
+    .voice-actions { display: flex; gap: 8px; justify-content: flex-end; }
 
     /* Time slots */
     .date-label {
@@ -391,6 +477,9 @@
       <button type="button" class="btn-primary" onclick="buscarHorarios()">
         Ver horários disponíveis
       </button>
+      <button type="button" class="btn-secondary" onclick="abrirAgendamentoPorVoz()">
+        Agendar por voz
+      </button>
     </div>
   </form>
 
@@ -444,6 +533,26 @@
 
 </div>
 
+<dialog class="voice-dialog" id="voiceDialog">
+  <div class="voice-dialog-content">
+    <button type="button" class="voice-close" onclick="fecharAgendamentoPorVoz()" aria-label="Fechar">×</button>
+    <h2 id="voiceTitle">Agende falando</h2>
+    <p id="voiceInstruction">
+      Diga seu nome completo, telefone, placa do veículo e data preferida.
+      Você poderá confirmar os dados antes de ver os horários.
+    </p>
+    <p class="voice-status" id="voiceStatus"></p>
+    <div class="voice-preview" id="voicePreview"></div>
+    <div class="voice-listening" id="voiceListening" hidden aria-label="Microfone ouvindo">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="voice-actions">
+      <button type="button" class="btn-ghost" id="voiceRestart" onclick="informarDadosNovamente()" hidden>Informar dados novamente</button>
+      <button type="button" class="btn-confirm" id="voiceAction" onclick="iniciarCapturaDeVoz()">Começar a falar</button>
+    </div>
+  </div>
+</dialog>
+
 <script>
   /* ------- Máscaras ------- */
   document.getElementById("telefone").addEventListener("input", function(e) {
@@ -484,6 +593,204 @@
 
     document.getElementById("horarioForm").value = "";
     document.getElementById("formAgendamento").submit();
+  }
+
+  const voiceDialog = document.getElementById("voiceDialog");
+  const voiceInstruction = document.getElementById("voiceInstruction");
+  const voiceStatus = document.getElementById("voiceStatus");
+  const voicePreview = document.getElementById("voicePreview");
+  const voiceAction = document.getElementById("voiceAction");
+  const voiceRestart = document.getElementById("voiceRestart");
+  const voiceListening = document.getElementById("voiceListening");
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let voiceData = {};
+  let voiceReadyToConfirm = false;
+
+  function abrirAgendamentoPorVoz() {
+    if (!SpeechRecognition) {
+      alert("Seu navegador não oferece reconhecimento de voz. Use uma versão recente do Chrome ou preencha o formulário manualmente.");
+      return;
+    }
+
+    voiceData = {
+      nome: document.getElementById("nome").value.trim(),
+      telefone: document.getElementById("telefone").value.trim(),
+      placa: document.getElementById("placa").value.trim(),
+      data: document.getElementById("data").value,
+    };
+    voiceReadyToConfirm = false;
+    voiceInstruction.textContent = "Diga seu nome completo, telefone, placa do veículo e data preferida.";
+    voiceStatus.textContent = "Quando estiver pronto, toque em “Começar a falar”.";
+    voicePreview.style.display = "none";
+    voiceListening.hidden = true;
+    voiceRestart.hidden = true;
+    voiceAction.hidden = false;
+    voiceAction.textContent = "Começar a falar";
+    voiceDialog.showModal();
+  }
+
+  function fecharAgendamentoPorVoz() {
+    voiceDialog.close();
+  }
+
+  function informarDadosNovamente() {
+    voiceData = {};
+    voiceReadyToConfirm = false;
+    voiceInstruction.textContent = "Diga seu nome completo, telefone, placa do veículo e data preferida.";
+    voiceStatus.textContent = "Quando estiver pronto, toque em “Começar a falar”.";
+    voicePreview.style.display = "none";
+    voiceRestart.hidden = true;
+    voiceAction.hidden = false;
+    voiceAction.disabled = false;
+    voiceAction.textContent = "Começar a falar";
+  }
+
+  function iniciarCapturaDeVoz() {
+    if (voiceReadyToConfirm) {
+      preencherFormularioComVoz();
+      fecharAgendamentoPorVoz();
+      sessionStorage.setItem("scrollToAvailableSlots", "true");
+      buscarHorarios();
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "pt-BR";
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+    let speechReceived = false;
+    let recognitionFailed = false;
+    let isCapturing = true;
+    let transcript = "";
+    let interimTranscript = "";
+    let silenceTimer;
+
+    function finalizarCaptura() {
+      isCapturing = false;
+      clearTimeout(silenceTimer);
+      recognition.stop();
+      const completeTranscript = `${transcript} ${interimTranscript}`.trim();
+      if (completeTranscript) {
+        voiceListening.hidden = true;
+        voiceAction.hidden = false;
+        voiceStatus.textContent = `Entendi: “${completeTranscript}”`;
+        processarFala(completeTranscript);
+      }
+    }
+
+    function aguardarSilencio() {
+      clearTimeout(silenceTimer);
+      silenceTimer = setTimeout(finalizarCaptura, 4000);
+    }
+
+    voiceAction.disabled = true;
+    voiceAction.hidden = true;
+    voiceRestart.hidden = true;
+    voiceListening.hidden = false;
+    voiceStatus.textContent = "Estamos ouvindo você… fale todos os dados com calma.";
+
+    recognition.onresult = function(event) {
+      speechReceived = true;
+      interimTranscript = "";
+      for (let index = event.resultIndex; index < event.results.length; index += 1) {
+        const result = event.results[index];
+        if (result.isFinal) {
+          transcript += `${result[0].transcript} `;
+        } else {
+          interimTranscript += result[0].transcript;
+        }
+      }
+      aguardarSilencio();
+    };
+    recognition.onerror = function(event) {
+      if (event.error === "no-speech" && speechReceived) {
+        aguardarSilencio();
+        return;
+      }
+      recognitionFailed = true;
+      isCapturing = false;
+      clearTimeout(silenceTimer);
+      voiceListening.hidden = true;
+      voiceAction.hidden = false;
+      voiceAction.disabled = false;
+      voiceStatus.textContent = event.error === "not-allowed"
+        ? "O acesso ao microfone foi bloqueado. Autorize-o nas configurações do navegador."
+        : "Não foi possível ouvir com clareza. Tente novamente.";
+    };
+    recognition.onend = function() {
+      if (isCapturing && !recognitionFailed) {
+        recognition.start();
+        return;
+      }
+      if (!speechReceived && !recognitionFailed) {
+        voiceListening.hidden = true;
+        voiceAction.hidden = false;
+        voiceAction.disabled = false;
+        voiceStatus.textContent = "Não identificamos uma fala. Tente novamente.";
+      }
+    };
+    recognition.start();
+  }
+
+  async function processarFala(transcript) {
+    voiceAction.disabled = true;
+    voiceStatus.textContent = "Conferindo seus dados…";
+    try {
+      const response = await fetch("{% url 'agendamento_por_voz' %}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
+        },
+        body: JSON.stringify({ transcript: transcript, dados: voiceData }),
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error || "Não foi possível processar a fala.");
+      }
+
+      voiceData = result.dados;
+      if (result.campos_faltantes.length) {
+        voiceInstruction.textContent = result.instrucao;
+        voiceStatus.textContent = "Toque em “Falar novamente” e diga somente essa informação.";
+        voiceRestart.hidden = true;
+        voiceAction.hidden = false;
+        voiceAction.textContent = "Falar novamente";
+        return;
+      }
+
+      voiceReadyToConfirm = true;
+      voiceInstruction.textContent = "Confira os dados. Se estiverem corretos, confirme para escolher o horário.";
+      voiceStatus.textContent = "";
+      voicePreview.innerHTML = `<strong>Nome:</strong> ${escaparHtml(voiceData.nome)}<br>
+        <strong>Telefone:</strong> ${escaparHtml(voiceData.telefone)}<br>
+        <strong>Placa:</strong> ${escaparHtml(voiceData.placa)}<br>
+        <strong>Data:</strong> ${escaparHtml(voiceData.data)}`;
+      voicePreview.style.display = "block";
+      voiceRestart.hidden = false;
+      voiceAction.hidden = false;
+      voiceAction.textContent = "Confirmar dados";
+    } catch (error) {
+      voiceStatus.textContent = error.message;
+      voiceAction.hidden = false;
+      voiceAction.textContent = "Tentar novamente";
+    } finally {
+      voiceAction.disabled = false;
+    }
+  }
+
+  function preencherFormularioComVoz() {
+    document.getElementById("nome").value = voiceData.nome;
+    document.getElementById("telefone").value = voiceData.telefone;
+    document.getElementById("placa").value = voiceData.placa;
+    document.getElementById("data").value = voiceData.data;
+  }
+
+  function escaparHtml(value) {
+    const element = document.createElement("div");
+    element.textContent = value;
+    return element.innerHTML;
   }
 
   /* ------- Seleção de horário (após retorno do Django com horarios no contexto) ------- */
@@ -551,6 +858,13 @@
     if (document.querySelectorAll(".horario-btn").length) {
       document.getElementById("secaoHorarios").classList.remove("hidden");
       initSlots();
+      if (sessionStorage.getItem("scrollToAvailableSlots") === "true") {
+        sessionStorage.removeItem("scrollToAvailableSlots");
+        document.getElementById("secaoHorarios").scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
     }
   });
 </script>
