@@ -109,8 +109,27 @@ que não esteja claro. Converta a data para YYYY-MM-DD; não invente dados.
         },
     }
 
+    model = settings.GEMINI_MODEL
+    if not model:
+        model = "gemini-1.5-flash"
+    
+    # Limpa caso venha com lixo
+    model = model.strip()
+
     query = urlencode({"key": api_key})
+    
+    # URL padrão exata da API REST do Gemini
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?{query}"
+    
+    # PRINT PARA VOCÊ VER NO LOG DO RAILWAY EXATAMENTE A URL CHAMADA
+    print("URL EXATA CHAMADA:", url.replace(api_key, "CHAVE_OCULTA"))
+
+    request = Request(
+        url,
+        data=json.dumps(payload).encode(),
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
 
     request = Request(
         url,
