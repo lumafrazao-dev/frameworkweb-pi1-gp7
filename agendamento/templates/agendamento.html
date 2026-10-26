@@ -307,13 +307,14 @@
     <h1>Gaslu Funilaria</h1>
     <p>Agende seu orçamento de forma rápida e prática</p>
     
-    <!-- Botão de acessibilidade / Leitor de instruções -->
-    <button type="button" class="btn-audio" onclick="lerInstrucoesPagina()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 15px; height: 15px; margin-right: 6px; vertical-align: middle;">
-        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+    <!-- Ícone de orelha para reativar a voz manualmente -->
+    <button type="button" class="btn-audio-icone" onclick="reativarVoz()" title="Ouvir orientações de preenchimento">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 9H2v6h4l5 5V4L6 9z"></path>
+        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
       </svg>
-      Ouvir orientações de preenchimento
+      <span class="sr-only">Ouvir orientações</span>
     </button>
   </header>
 
@@ -549,5 +550,22 @@
     }
   });
 </script>
+  <!-- Pop-up de boas-vindas para ativação de voz -->
+  <div id="modalVoz" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 28px; height: 28px; color: var(--ink);">
+          <path d="M6 9H2v6h4l5 5V4L6 9z"></path>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+        </svg>
+      </div>
+      <h3>Assistente de Voz</h3>
+      <p>Bem-vindo ao sistema de agendamento da Gaslu Funilaria e Pintura. Deseja continuar ouvindo as instruções de agendamento por voz?</p>
+      <div class="modal-actions">
+        <button type="button" class="btn-modal-nao" onclick="responderVoz(false)">Não, obrigado</button>
+        <button type="button" class="btn-modal-ok" onclick="responderVoz(true)">OK</button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
