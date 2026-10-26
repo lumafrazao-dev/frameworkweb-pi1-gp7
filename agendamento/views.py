@@ -24,22 +24,20 @@ VOICE_FIELD_LABELS = {
 }
 
 def gerar_horarios(data):
-    horarios = [] #guarda os hrs
-    if data.weekday() == 5:  #sab
+    horarios = []
+    if data.weekday() == 5:  # Sábado
         inicio = datetime.combine(data, datetime.min.time()).replace(hour=9, minute=0)
         fim = datetime.combine(data, datetime.min.time()).replace(hour=14, minute=0)
-    else:  #seg a sex
+    else:  # Segunda a sexta
         inicio = datetime.combine(data, datetime.min.time()).replace(hour=9, minute=0)
         fim = datetime.combine(data, datetime.min.time()).replace(hour=17, minute=30)
 
-    atual = inicio #gera intervalo 30min
+    atual = inicio
     while atual <= fim:
         horarios.append(atual.strftime("%H:%M"))
         atual += timedelta(minutes=30)
 
-    #busca os hrs ocupados no banco
     ocupados = Agendamento.objects.filter(data=data).values_list('horario', flat=True)
-    # exclui os hrs ocupados
     horarios_disponiveis = [h for h in horarios if h not in ocupados]
     return horarios_disponiveis
 
@@ -71,16 +69,8 @@ def _normalize_appointment_data(data):
 
     return normalized
 
-def _extract_appointment_data(transcript, current_data):
-    api_key = settings.GEMINI_API_KEY
-    print("DEBUG - CHAVE EXISTE?", bool(api_key), "TAMANHO:", len(api_key) if api_key else 0)
-    if not api_key:
-        raise RuntimeError("A integração com o Gemini não está configurada.")
 
-    try:
-        client = genai.Client(api_key=api_key)
-        print("DEBUG - CLIENTE CRIADO COM SUCESSO")
-        
+def _extract_appointment_data(transcript, current_data):
     api_key = settings.GEMINI_API_KEY
     if not api_key:
         raise RuntimeError("A integração com o Gemini não está configurada.")
@@ -88,7 +78,7 @@ def _extract_appointment_data(transcript, current_data):
     model = settings.GEMINI_MODEL
     if not model:
         model = "gemini-1.5-flash"
-    model = model.replace("models/", "")
+    model = model.replace("models/", "").strip()
 
     prompt = f"""
 Extraia dados para um agendamento de funilaria no Brasil.
@@ -118,27 +108,8 @@ que não esteja claro. Converta a data para YYYY-MM-DD; não invente dados.
         },
     }
 
-    model = settings.GEMINI_MODEL
-    if not model:
-        model = "gemini-1.5-flash"
-    
-    # Limpa caso venha com lixo
-    model = model.strip()
-
     query = urlencode({"key": api_key})
-    
-    # URL padrão exata da API REST do Gemini
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?{query}"
-    
-    # PRINT PARA VOCÊ VER NO LOG DO RAILWAY EXATAMENTE A URL CHAMADA
-    print("URL EXATA CHAMADA:", url.replace(api_key, "CHAVE_OCULTA"))
-
-    request = Request(
-        url,
-        data=json.dumps(payload).encode(),
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
 
     request = Request(
         url,
@@ -158,6 +129,7 @@ que não esteja claro. Converta a data para YYYY-MM-DD; não invente dados.
     except (KeyError, IndexError, TypeError, json.JSONDecodeError) as error:
         logger.warning("Gemini returned an invalid response: %s", error)
         raise RuntimeError("Não foi possível interpretar os dados informados.") from error
+
 
 @require_POST
 def processar_agendamento_por_voz(request):
@@ -205,7 +177,6 @@ def home(request):
         placa = request.POST.get("placa")
         data_str = request.POST.get("data")
         horario = request.POST.get("horario")
-        print("HORARIO RECEBIDO:", horario)
      
         dados = {
             "nome": nome,
@@ -229,7 +200,7 @@ def home(request):
             
             if data.weekday() != 6:
                 horarios = gerar_horarios(data)
-                 
+                
     return render(request, "agendamento.html", {
         "horarios": horarios,
         "dados": dados
@@ -237,16 +208,13 @@ def home(request):
 
 
 def escolher_opcao(request):
-    """Exibe a tela inicial com os botões de Novo Agendamento ou Editar."""
     return render(request, "escolher_opcao.html")
 
 
 def buscar_cadastro_para_editar(request):
-    """Recebe o nome digitado, busca no banco e redireciona para edição ou exibe pop-up de erro."""
     erro = False
     if request.method == "POST":
         nome_busca = request.POST.get("nome_busca", "").strip()
-        
         agendamento = Agendamento.objects.filter(nome__icontains=nome_busca).order_by('-data').first()
         
         if agendamento:
@@ -258,7 +226,6 @@ def buscar_cadastro_para_editar(request):
 
 
 def editar_agendamento(request, pk):
-    """Carrega os dados atuais do agendamento para o usuário alterar e salvar."""
     agendamento = get_object_or_404(Agendamento, pk=pk)
     horarios = []
     
