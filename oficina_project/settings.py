@@ -133,5 +133,14 @@ from dotenv import load_dotenv
 # Carrega o .env se ele existir (ótimo para ambiente local)
 load_dotenv()
 
+import os
+from dotenv import load_dotenv
+
+# Carrega o .env se ele existir (ótimo para ambiente local)
+load_dotenv()
+
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
+
+# Força o modelo correto caso a variável do Railway venha vazia ou nula
+_model_env = os.getenv("GEMINI_MODEL")
+GEMINI_MODEL = _model_env if _model_env else "gemini-1.5-flash"
