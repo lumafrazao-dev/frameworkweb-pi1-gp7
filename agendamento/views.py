@@ -38,21 +38,21 @@ def api_guia_cadastro(request):
     guias = {
         "nome": {
             "titulo": "Qual é o seu nome?",
-            "explicacao": "No primeiro espaço você vai escrever seu nome completo igual está no seu documento.",
+            "explicacao": "Nesse primeiro espaço você vai escrever seu nome completo.",
             "exemplo": "Exemplo: Maria da Silva Santos",
         },
         "telefone": {
-            "titulo": "Nesse segundo campo você insere o número do seu celular.",
-            "explicacao": "Digite o número com o DDD da sua cidade para a oficina te mandar a confirmação.",
+            "titulo": "Neste segundo campo você insere o número do seu celular com o DDD.",
+            "explicacao": "É necessário para a oficina te enviar a confirmação por mensagem.",
             "exemplo": "Exemplo: 13 99999-0000",
         },
         "placa": {
-            "titulo": "No terceiro campo, você vai colocar a placa do seu veículo.",
-            "explicacao": "São aquelas letras e números que ficam no parachoque, na frente ou atrás do carro.",
+            "titulo": "Aqui nesse terceiro campo, você vai colocar a placa do seu veículo.",
+            "explicacao": "São as letras e números que ficam no parachoque, na frente ou atrás do carro.",
             "exemplo": "Exemplo: ABC 1234",
         },
         "data": {
-            "titulo": "Nesse último campo você vai escolher data do agendamento e após escolher, clicando no botão preto, você escolherá os horários.",
+            "titulo": "Nesse último campo você vai escolher data do agendamento e logo abaixo você escolherá os horários.",
             "explicacao": "Escolha o dia que você quer levar o veículo na oficina.",
             "exemplo": "Exemplo: Selecione no calendário.",
         }
