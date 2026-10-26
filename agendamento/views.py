@@ -2,14 +2,13 @@ import json
 import logging
 import re
 from datetime import date, datetime, timedelta
-from urllib.error import HTTPError, URLError
-from urllib.parse import urlencode
-from urllib.request import Request, urlopen
 
 from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
+from google import genai
+from google.genai import types
 
 from .models import Agendamento
 
@@ -75,10 +74,10 @@ def _extract_appointment_data(transcript, current_data):
     if not api_key:
         raise RuntimeError("A integração com o Gemini não está configurada.")
 
-    model = settings.GEMINI_MODEL
-    if not model:
-        model = "gemini-1.5-flash"
-    model = model.replace("models/", "").strip()
+    model_name = getattr(settings, "GEMINI_MODEL", "gemini-1.5-flash")
+    if not model_name:
+        model_name = "gemini-1.5-flash"
+    model_name = model_name.replace("models/", "").strip()
 
     prompt = f"""
 Extraia dados para um agendamento de funilaria no Brasil.
@@ -86,49 +85,24 @@ Data atual: {date.today().isoformat()}.
 Transcrição do cliente: {transcript!r}.
 Dados já coletados: {json.dumps(current_data, ensure_ascii=False)}.
 
-Retorne somente um objeto JSON com as chaves nome, telefone, placa e data.
+Retorne somente um objeto JSON estruturado com as chaves nome, telefone, placa e data.
 Mescle dados já coletados com novos dados. Use string vazia para qualquer dado
 que não esteja claro. Converta a data para YYYY-MM-DD; não invente dados.
 """.strip()
 
-    payload = {
-        "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {
-            "responseMimeType": "application/json",
-            "responseSchema": {
-                "type": "OBJECT",
-                "properties": {
-                    "nome": {"type": "STRING"},
-                    "telefone": {"type": "STRING"},
-                    "placa": {"type": "STRING"},
-                    "data": {"type": "STRING"},
-                },
-                "required": list(VOICE_FIELDS),
-            },
-        },
-    }
-
-    query = urlencode({"key": api_key})
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?{query}"
-
-    request = Request(
-        url,
-        data=json.dumps(payload).encode(),
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
-
     try:
-        with urlopen(request, timeout=15) as response:
-            result = json.load(response)
-        text = result["candidates"][0]["content"]["parts"][0]["text"]
-        return json.loads(text)
-    except (HTTPError, URLError, TimeoutError) as error:
+        client = genai.Client(api_key=api_key)
+        response = client.models.generate_content(
+            model=model_name,
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json",
+            ),
+        )
+        return json.loads(response.text)
+    except Exception as error:
         logger.warning("Gemini request failed: %s", error)
         raise RuntimeError("Não foi possível processar a fala agora.") from error
-    except (KeyError, IndexError, TypeError, json.JSONDecodeError) as error:
-        logger.warning("Gemini returned an invalid response: %s", error)
-        raise RuntimeError("Não foi possível interpretar os dados informados.") from error
 
 
 @require_POST
@@ -154,6 +128,7 @@ def processar_agendamento_por_voz(request):
     for field, value in _normalize_appointment_data(extracted_data).items():
         if value:
             data[field] = value
+            
     missing_fields = [field for field in VOICE_FIELDS if not data[field]]
     return JsonResponse(
         {
@@ -171,6 +146,8 @@ def processar_agendamento_por_voz(request):
 def home(request):
     horarios = []
     dados = {}
+    agendamento_confirmado = False
+    
     if request.method == "POST":
         nome = request.POST.get("nome")
         telefone = request.POST.get("telefone")
@@ -196,14 +173,20 @@ def home(request):
                         data=data,
                         horario=horario
                     )
-                return redirect("escolher_opcao")
+                    agendamento_confirmado = True
+                return render(request, "agendamento.html", {
+                    "horarios": horarios,
+                    "dados": dados,
+                    "agendamento_confirmado": agendamento_confirmado
+                })
             
             if data.weekday() != 6:
                 horarios = gerar_horarios(data)
                 
     return render(request, "agendamento.html", {
         "horarios": horarios,
-        "dados": dados
+        "dados": dados,
+        "agendamento_confirmado": agendamento_confirmado
     })
 
 
