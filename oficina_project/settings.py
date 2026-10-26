@@ -127,5 +127,11 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
-GEMINI_MODEL = os.environ.get('GEMINI_MODEL', 'gemini-2.5-flash')
+import os
+from dotenv import load_dotenv
+
+# Carrega o .env se ele existir (ótimo para ambiente local)
+load_dotenv()
+
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
