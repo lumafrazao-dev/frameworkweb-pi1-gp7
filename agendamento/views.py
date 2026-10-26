@@ -11,6 +11,8 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
 
+from django.shortcuts import render, redirect, get_object_or_404
+from datetime import datetime, timedelta
 from .models import Agendamento
 
 logger = logging.getLogger(__name__)
