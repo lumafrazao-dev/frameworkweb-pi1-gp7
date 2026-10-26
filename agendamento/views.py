@@ -47,8 +47,8 @@ def api_guia_cadastro(request):
             "exemplo": "Exemplo: 13 99999-0000",
         },
         "placa": {
-            "titulo": "Qual é a placa do seu carro ou moto?",
-            "explicacao": "São aquelas 3 letras e 4 números que ficam na frente ou atrás do veículo.",
+            "titulo": "Qual é a placa do seu veículo?",
+            "explicacao": "São aquelas letras e números que ficam no parachoque da frente ou atrás do veículo.",
             "exemplo": "Exemplo: ABC 1234",
         },
         "data": {
