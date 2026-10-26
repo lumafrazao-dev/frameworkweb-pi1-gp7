@@ -72,10 +72,8 @@ def _normalize_appointment_data(data):
     return normalized
 
 def _extract_appointment_data(transcript, current_data):
-    def _extract_appointment_data(transcript, current_data):
     api_key = settings.GEMINI_API_KEY
     print("DEBUG - CHAVE EXISTE?", bool(api_key), "TAMANHO:", len(api_key) if api_key else 0)
-    
     if not api_key:
         raise RuntimeError("A integração com o Gemini não está configurada.")
 
