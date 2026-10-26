@@ -73,10 +73,28 @@ def _normalize_appointment_data(data):
 
 
 def _extract_appointment_data(transcript, current_data):
-    api_key = settings.GEMINI_API_KEY
-    if not api_key:
-        raise RuntimeError("A integração com o Gemini não está configurada.")
+    #api_key = settings.GEMINI_API_KEY
+    #if not api_key:
+        #raise RuntimeError("A integração com o Gemini não está configurada.")
+    model = settings.GEMINI_MODEL
+    # Garante que o modelo venha limpo e use o prefixo correto se necessário
+    if not model:
+        model = "gemini-1.5-flash"
+    
+    # Remove prefixos duplicados caso alguém tenha digitado 'models/gemini-...' por engano
+    model = model.replace("models/", "")
 
+    query = urlencode({"key": api_key})
+    
+    # URL oficial e padrão da API v1beta do Gemini
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?{query}"
+
+    request = Request(
+        url,
+        data=json.dumps(payload).encode(),
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
     prompt = f"""
 Extraia dados para um agendamento de funilaria no Brasil.
 Data atual: {date.today().isoformat()}.
