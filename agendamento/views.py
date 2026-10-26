@@ -199,4 +199,86 @@ def home(request):
     return render(request, "agendamento.html", {
         "horarios": horarios,
         "dados": dados
+
+from django.shortcuts import get_object_or_404, redirect, render
+# (Mantenha as outras importações que você já tem no topo: json, datetime, etc.)
+
+def escolher_opcao(request):
+    """Exibe a tela inicial com os botões de Novo Agendamento ou Editar."""
+    return render(request, "escolher_opcao.html")
+
+def buscar_cadastro_para_editar(request):
+    """Recebe o nome digitado, busca no banco e redireciona para edição ou exibe pop-up de erro."""
+    erro = False
+    if request.method == "POST":
+        nome_busca = request.POST.get("nome_busca", "").strip()
+        
+        # Procura o agendamento mais recente com esse nome (ignorando maiúsculas/minúsculas)
+        agendamento = Agendamento.objects.filter(nome__icontains=nome_busca).order_by('-data').first()
+        
+        if agendamento:
+            # Se achou, vai direto para a rota de edição desse agendamento
+            return redirect('editar_agendamento', pk=agendamento.pk)
+        else:
+            # Se não achou, ativa a bandeira de erro para mostrar o pop-up no HTML
+            erro = True
+
+    return render(request, "buscar_cadastro.html", {"erro": erro})
+
+def editar_agendamento(request, pk):
+    """Carrega os dados atuais do agendamento para o usuário alterar e salvar."""
+    agendamento = get_object_or_404(Agendamento, pk=pk)
+    horarios = []
+    
+    # Gera os horários disponíveis da data atual do agendamento
+    if agendamento.data.weekday() != 6:
+        horarios = gerar_horarios(agendamento.data)
+
+    dados = {
+        "nome": agendamento.nome,
+        "telefone": agendamento.telefone,
+        "placa": agendamento.placa,
+        "data": agendamento.data.strftime("%Y-%m-%d"),
+        "horario": agendamento.horario
+    }
+
+    if request.method == "POST":
+        nome = request.POST.get("nome")
+        telefone = request.POST.get("telefone")
+        placa = request.POST.get("placa")
+        data_str = request.POST.get("data")
+        horario = request.POST.get("horario")
+
+        dados = {
+            "nome": nome,
+            "telefone": telefone,
+            "placa": placa,
+            "data": data_str,
+            "horario": horario
+        }
+
+        if data_str:
+            data = datetime.strptime(data_str, "%Y-%m-%d").date()
+            
+            if horario:
+                # Verifica se o horário já está ocupado por OUTRO registro
+                existe = Agendamento.objects.filter(data=data, horario=horario).exclude(pk=pk).exists()
+                if not existe:
+                    agendamento.nome = nome
+                    agendamento.telefone = telefone
+                    agendamento.placa = placa
+                    agendamento.data = data
+                    agendamento.horario = horario
+                    agendamento.save()
+                    return redirect("escolher_opcao") # Ou redireciona para uma tela de sucesso
+            
+            if data.weekday() != 6:
+                horarios = gerar_horarios(data)
+
+    return render(request, "agendamento.html", {
+        "horarios": horarios,
+        "dados": dados,
+        "agendamento": agendamento,
+        "editando": True
+    })
     })
