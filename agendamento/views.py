@@ -48,11 +48,11 @@ def api_guia_cadastro(request):
         },
         "placa": {
             "titulo": "No terceiro campo, você vai colocar a placa do seu veículo.",
-            "explicacao": "São aquelas letras e números que ficam no parachoque, na frente ou atrás do veículo.",
+            "explicacao": "São aquelas letras e números que ficam no parachoque, na frente ou atrás do carro.",
             "exemplo": "Exemplo: ABC 1234",
         },
         "data": {
-            "titulo": "E por fim, nesse último campo você vai escolher data e horário do agendamento.",
+            "titulo": "Nesse último campo você vai escolher data do agendamento e após escolher, clicando no botão preto, você escolherá os horários.",
             "explicacao": "Escolha o dia que você quer levar o veículo na oficina.",
             "exemplo": "Exemplo: Selecione no calendário.",
         }
