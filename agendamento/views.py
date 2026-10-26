@@ -200,3 +200,32 @@ def home(request):
         "horarios": horarios,
         "dados": dados
     })
+
+from django.shortcuts import get_object_or_404, redirect, render
+from .models import Agendamento
+
+def escolher_opcao(request):
+    """Página inicial com as duas opções: Novo ou Editar."""
+    return render(request, "escolher_opcao.html")
+
+
+def buscar_cadastro_para_editar(request):
+    """Busca o agendamento pelo nome inserido pelo cliente."""
+    agendamento = None
+    erro = False
+    
+    if request.method == "POST":
+        nome_busca = request.POST.get("nome_busca", "").strip()
+        
+        # Tenta encontrar o agendamento pelo nome (ignorando maiúsculas/minúsculas se usar icontains)
+        # Pegamos o primeiro ou o mais recente caso haja mais de um
+        agendamento = Agendamento.objects.filter(nome__icontains=nome_busca).order_by('-data').first()
+        
+        if agendamento:
+            # Se encontrou, redireciona para a view de edição que já criamos usando o ID dele
+            return redirect('editar_agendamento', pk=agendamento.pk)
+        else:
+            # Se não encontrou, ativa a flag de erro para exibir o pop-up
+            erro = True
+
+    return render(request, "buscar_cadastro.html", {"erro": erro})
