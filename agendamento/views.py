@@ -1,26 +1,15 @@
 import json
 import logging
-import re
 from datetime import date, datetime, timedelta
 
-from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.decorators.http import require_POST
-from google import genai
-from google.genai import types
+from django.views.decorators.http import require_GET
 
 from .models import Agendamento
 
 logger = logging.getLogger(__name__)
 
-VOICE_FIELDS = ("nome", "telefone", "placa", "data")
-VOICE_FIELD_LABELS = {
-    "nome": "nome completo",
-    "telefone": "telefone",
-    "placa": "placa do veículo",
-    "data": "data preferida",
-}
 
 def gerar_horarios(data):
     horarios = []
@@ -41,106 +30,44 @@ def gerar_horarios(data):
     return horarios_disponiveis
 
 
-def _normalize_appointment_data(data):
-    normalized = {field: "" for field in VOICE_FIELDS}
-
-    name = str(data.get("nome", "")).strip()
-    if re.fullmatch(r"[A-Za-zÀ-ÿ]+(?: [A-Za-zÀ-ÿ]+)+", name):
-        normalized["nome"] = name
-
-    phone_digits = re.sub(r"\D", "", str(data.get("telefone", "")))
-    if phone_digits.startswith("55") and len(phone_digits) in (12, 13):
-        phone_digits = phone_digits[2:]
-    if len(phone_digits) in (10, 11):
-        normalized["telefone"] = phone_digits
-
-    plate = re.sub(r"[^A-Z0-9]", "", str(data.get("placa", "")).upper())
-    if re.fullmatch(r"[A-Z]{3}[0-9][A-Z0-9][0-9]{2}", plate):
-        normalized["placa"] = plate
-
-    appointment_date = str(data.get("data", "")).strip()
-    try:
-        parsed_date = datetime.strptime(appointment_date, "%Y-%m-%d").date()
-    except ValueError:
-        parsed_date = None
-    if parsed_date and parsed_date >= date.today() and parsed_date.weekday() != 6:
-        normalized["data"] = parsed_date.isoformat()
-
-    return normalized
-
-
-def _extract_appointment_data(transcript, current_data):
-    api_key = settings.GEMINI_API_KEY
-    if not api_key:
-        raise RuntimeError("A integração com o Gemini não está configurada.")
-
-    model_name = getattr(settings, "GEMINI_MODEL", "gemini-1.5-flash")
-    if not model_name:
-        model_name = "gemini-1.5-flash"
-    model_name = model_name.replace("models/", "").strip()
-
-    prompt = f"""
-Extraia dados para um agendamento de funilaria no Brasil.
-Data atual: {date.today().isoformat()}.
-Transcrição do cliente: {transcript!r}.
-Dados já coletados: {json.dumps(current_data, ensure_ascii=False)}.
-
-Retorne somente um objeto JSON estruturado com as chaves nome, telefone, placa e data.
-Mescle dados já coletados com novos dados. Use string vazia para qualquer dado
-que não esteja claro. Converta a data para YYYY-MM-DD; não invente dados.
-""".strip()
-
-    try:
-        client = genai.Client(api_key=api_key)
-        response = client.models.generate_content(
-            model="gemini-3.8-flash",
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                response_mime_type="application/json",
-            ),
-        )
-        return json.loads(response.text)
-    except Exception as error:
-        logger.warning("Gemini request failed: %s", error)
-        raise RuntimeError("Não foi possível processar a fala agora.") from error
-
-
-@require_POST
-def processar_agendamento_por_voz(request):
-    try:
-        payload = json.loads(request.body)
-    except json.JSONDecodeError:
-        return JsonResponse({"error": "A solicitação de voz é inválida."}, status=400)
-
-    transcript = payload.get("transcript", "")
-    current_data = payload.get("dados", {})
-    if not isinstance(transcript, str) or not transcript.strip():
-        return JsonResponse({"error": "Não foi possível identificar a fala."}, status=400)
-    if len(transcript) > 1000 or not isinstance(current_data, dict):
-        return JsonResponse({"error": "A solicitação de voz é inválida."}, status=400)
-
-    try:
-        extracted_data = _extract_appointment_data(transcript.strip(), current_data)
-    except RuntimeError as error:
-        return JsonResponse({"error": str(error)}, status=503)
-
-    data = _normalize_appointment_data(current_data)
-    for field, value in _normalize_appointment_data(extracted_data).items():
-        if value:
-            data[field] = value
-            
-    missing_fields = [field for field in VOICE_FIELDS if not data[field]]
-    return JsonResponse(
-        {
-            "dados": data,
-            "campos_faltantes": missing_fields,
-            "instrucao": (
-                f"Diga apenas seu {VOICE_FIELD_LABELS[missing_fields[0]]}."
-                if missing_fields
-                else "Confira os dados antes de buscar os horários."
-            ),
+@require_GET
+def api_guia_cadastro(request):
+    """API de acessibilidade para auxiliar pessoas com baixa leitura no preenchimento."""
+    campo = request.GET.get("campo", "").strip().lower()
+    
+    guias = {
+        "nome": {
+            "titulo": "Qual é o seu nome?",
+            "explicacao": "Escreva seu nome completo igual está no seu documento.",
+            "exemplo": "Exemplo: Maria da Silva Santos",
+        },
+        "telefone": {
+            "titulo": "Qual o número do seu WhatsApp ou celular?",
+            "explicacao": "Digite o número com o DDD da sua cidade para a oficina te mandar a confirmação.",
+            "exemplo": "Exemplo: 13 99999-0000",
+        },
+        "placa": {
+            "titulo": "Qual é a placa do seu carro ou moto?",
+            "explicacao": "São aquelas 3 letras e 4 números que ficam na frente ou atrás do veículo.",
+            "exemplo": "Exemplo: ABC 1234",
+        },
+        "data": {
+            "titulo": "Para qual dia você quer marcar?",
+            "explicacao": "Escolha o dia que você quer levar o veículo na oficina.",
+            "exemplo": "Exemplo: Selecione no calendário.",
         }
-    )
+    }
+    
+    if campo in guias:
+        return JsonResponse({
+            "status": "sucesso",
+            "dados_campo": guias[campo]
+        }, json_dumps_params={'ensure_ascii': False})
+    
+    return JsonResponse({
+        "status": "sucesso",
+        "mensagem_geral": "Bem-vindo! Vamos preencher o cadastro juntos, passo a passo."
+    }, json_dumps_params={'ensure_ascii': False})
 
 
 def home(request):
