@@ -79,6 +79,24 @@
       margin-top: 8px;
     }
 
+    /* Botão de Áudio / Acessibilidade */
+    .btn-audio {
+      display: inline-flex;
+      align-items: center;
+      background: var(--surface2);
+      border: 0.5px solid var(--border-strong);
+      color: var(--ink);
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: background 0.15s;
+    }
+    .btn-audio:hover { background: var(--border); }
+
     /* Cards */
     .card {
       background: var(--surface);
@@ -88,8 +106,6 @@
       margin-bottom: 1rem;
       animation: fadeUp 0.5s ease both;
     }
-    .card:nth-child(2) { animation-delay: 0.07s; }
-    .card:nth-child(3) { animation-delay: 0.14s; }
 
     .card-header {
       display: flex;
@@ -166,92 +182,6 @@
     }
     .btn-primary:hover { opacity: 0.82; }
     .btn-primary:active { transform: scale(0.99); }
-    .btn-secondary {
-      width: 100%;
-      padding: 12px;
-      background: transparent;
-      color: var(--ink);
-      border: 0.5px solid var(--border-strong);
-      border-radius: var(--radius-sm);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
-      font-weight: 500;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    .voice-dialog {
-      width: min(420px, calc(100% - 2rem));
-      position: fixed;
-      inset: 50% auto auto 50%;
-      margin: 0;
-      transform: translate(-50%, -50%);
-      border: none;
-      border-radius: var(--radius);
-      padding: 0;
-      color: var(--ink);
-      background: var(--surface);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.22);
-    }
-    .voice-dialog::backdrop { background: rgba(26, 24, 20, 0.5); }
-    .voice-dialog-content { position: relative; padding: 1.5rem; }
-    .voice-close {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      width: 32px;
-      height: 32px;
-      border: none;
-      border-radius: 50%;
-      background: transparent;
-      color: var(--ink2);
-      font-size: 24px;
-      line-height: 1;
-      cursor: pointer;
-    }
-    .voice-close:hover { background: var(--surface2); color: var(--ink); }
-    .voice-dialog h2 {
-      font-family: 'DM Serif Display', serif;
-      font-weight: 400;
-      font-size: 24px;
-      margin-bottom: 10px;
-    }
-    .voice-dialog p { color: var(--ink2); font-size: 14px; line-height: 1.5; }
-    .voice-status { margin: 1rem 0; min-height: 2.5em; }
-    .voice-preview {
-      display: none;
-      margin: 1rem 0;
-      padding: 12px;
-      border-radius: var(--radius-sm);
-      background: var(--surface2);
-      font-size: 14px;
-      line-height: 1.6;
-    }
-    .voice-listening {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      min-height: 42px;
-      margin: 1rem 0;
-      color: var(--green);
-    }
-    .voice-listening[hidden] { display: none; }
-    .voice-listening span {
-      width: 5px;
-      height: 14px;
-      border-radius: 99px;
-      background: currentColor;
-      animation: sound-wave 0.8s ease-in-out infinite alternate;
-    }
-    .voice-listening span:nth-child(2) { animation-delay: 0.15s; }
-    .voice-listening span:nth-child(3) { animation-delay: 0.3s; }
-    .voice-listening span:nth-child(4) { animation-delay: 0.45s; }
-    .voice-listening span:nth-child(5) { animation-delay: 0.6s; }
-    @keyframes sound-wave {
-      from { transform: scaleY(0.55); }
-      to { transform: scaleY(2.2); }
-    }
-    .voice-actions { display: flex; gap: 8px; justify-content: flex-end; }
 
     /* Time slots */
     .date-label {
@@ -284,13 +214,6 @@
       color: var(--slot-sel-text);
       border-color: var(--slot-sel);
     }
-    .slot.unavailable {
-      background: var(--slot-off);
-      color: var(--slot-off-text);
-      border-color: var(--border);
-      cursor: not-allowed;
-      font-weight: 400;
-    }
 
     /* Confirm box */
     .confirm-box {
@@ -322,9 +245,7 @@
       font-weight: 500;
       cursor: pointer;
       color: var(--ink);
-      transition: background 0.12s;
     }
-    .btn-ghost:hover { background: var(--border); }
     .btn-confirm {
       padding: 10px;
       background: var(--ink);
@@ -335,9 +256,7 @@
       font-size: 14px;
       font-weight: 500;
       cursor: pointer;
-      transition: opacity 0.15s;
     }
-    .btn-confirm:hover { opacity: 0.82; }
 
     /* Success */
     .success-card {
@@ -365,26 +284,12 @@
     }
     .success-card p { font-size: 14px; color: var(--ink2); }
 
-    /* Hidden */
     .hidden { display: none !important; }
 
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(12px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-
-    /* Django messages */
-    .messages { list-style: none; margin-bottom: 1rem; }
-    .messages li {
-      padding: 10px 14px;
-      border-radius: var(--radius-sm);
-      font-size: 14px;
-      margin-bottom: 6px;
-    }
-    .messages li.success { background: var(--green-bg); color: var(--green); }
-    .messages li.error { background: #FDECEA; color: #C0392B; }
-    .messages li.warning { background: #FEF9E7; color: #7D6608; }
-    .messages li.info { background: #EAF4FD; color: #1A5276; }
   </style>
 </head>
 <body>
@@ -401,15 +306,16 @@
     </div>
     <h1>Gaslu Funilaria</h1>
     <p>Agende seu orçamento de forma rápida e prática</p>
+    
+    <!-- Botão de acessibilidade / Leitor de instruções -->
+    <button type="button" class="btn-audio" onclick="lerInstrucoesPagina()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 15px; height: 15px; margin-right: 6px; vertical-align: middle;">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+      </svg>
+      Ouvir orientações de preenchimento
+    </button>
   </header>
-
-  {% if messages %}
-  <ul class="messages">
-    {% for message in messages %}
-      <li class="{{ message.tags }}">{{ message }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
 
   <form method="POST" id="formAgendamento">
     {% csrf_token %}
@@ -429,8 +335,7 @@
         </label>
         <input type="text" name="nome" id="nome"
                placeholder="Ex: João Silva"
-               value="{{ dados.nome|default:'' }}"
-               pattern="[A-Za-zÀ-ú ]+" required>
+               value="{{ dados.nome|default:'' }}" required>
       </div>
 
       <div class="row">
@@ -477,13 +382,10 @@
       <button type="button" class="btn-primary" onclick="buscarHorarios()">
         Ver horários disponíveis
       </button>
-      <button type="button" class="btn-secondary" onclick="abrirAgendamentoPorVoz()">
-        Agendar por voz
-      </button>
     </div>
   </form>
 
-  <!-- Seção de horários (aparece após submissão Django ou via JS) -->
+  <!-- Seção de horários -->
   <div id="secaoHorarios" {% if not horarios %}class="hidden"{% endif %}>
     <div class="card" style="animation-delay:0.1s">
       <div class="card-header">
@@ -491,13 +393,7 @@
         <span>Horário disponível</span>
       </div>
 
-      {% if dados.data %}
-      <p class="date-label" id="dataLabel">
-        <strong>{{ dados.data }}</strong>
-      </p>
-      {% else %}
       <p class="date-label" id="dataLabel"></p>
-      {% endif %}
 
       <div class="slots-grid" id="slotsGrid">
         {% if horarios %}
@@ -517,7 +413,6 @@
     </div>
   </div>
 
-  <!-- Cartão de sucesso (exibido pelo Django quando agendamento salvo) -->
   {% if agendamento_confirmado %}
   <div class="success-card" style="display:block">
     <div class="success-icon">
@@ -530,31 +425,10 @@
   </div>
   {% endif %}
 
-
 </div>
 
-<dialog class="voice-dialog" id="voiceDialog">
-  <div class="voice-dialog-content">
-    <button type="button" class="voice-close" onclick="fecharAgendamentoPorVoz()" aria-label="Fechar">×</button>
-    <h2 id="voiceTitle">Agende falando</h2>
-    <p id="voiceInstruction">
-      Diga seu nome completo, telefone, placa do veículo e data preferida.
-      Você poderá confirmar os dados antes de ver os horários.
-    </p>
-    <p class="voice-status" id="voiceStatus"></p>
-    <div class="voice-preview" id="voicePreview"></div>
-    <div class="voice-listening" id="voiceListening" hidden aria-label="Microfone ouvindo">
-      <span></span><span></span><span></span><span></span><span></span>
-    </div>
-    <div class="voice-actions">
-      <button type="button" class="btn-ghost" id="voiceRestart" onclick="informarDadosNovamente()" hidden>Informar dados novamente</button>
-      <button type="button" class="btn-confirm" id="voiceAction" onclick="iniciarCapturaDeVoz()">Começar a falar</button>
-    </div>
-  </div>
-</dialog>
-
 <script>
-  /* ------- Máscaras ------- */
+  // Máscara de telefone
   document.getElementById("telefone").addEventListener("input", function(e) {
     let v = e.target.value.replace(/\D/g, "").slice(0, 11);
     if (v.length > 6) v = v.replace(/(\d{2})(\d{5})(\d+)/, "($1) $2-$3");
@@ -562,24 +436,43 @@
     e.target.value = v;
   });
 
+  // Máscara de placa
   document.getElementById("placa").addEventListener("input", function(e) {
     e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
   });
 
-  /* ------- Bloqueio de datas ------- */
-  const feriados = ["2026-01-01", "2026-04-21", "2026-05-01", "2026-09-07",
-                    "2026-10-12", "2026-11-02", "2026-11-15", "2026-12-25"];
-
-  document.getElementById("data").addEventListener("change", function(e) {
-    const val = e.target.value;
-    const d = new Date(val + "T00:00:00");
-    if (d.getDay() === 0 || feriados.includes(val)) {
-      alert("Domingos e feriados não estão disponíveis para agendamento.");
-      e.target.value = "";
+  // Leitor de voz nativo e integração com a API de acessibilidade (Guia de Cadastro)
+  function falarTexto(texto) {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(texto);
+      utterance.lang = 'pt-BR';
+      utterance.rate = 1.0;
+      window.speechSynthesis.speak(utterance);
     }
+  }
+
+  function lerInstrucoesPagina() {
+    falarTexto("Bem-vindo à Gaslu Funilaria. Para agendar seu orçamento, preencha seu nome completo, telefone com DDD, placa do veículo e escolha a data preferida. Depois clique em ver horários disponíveis.");
+  }
+
+  // Consulta à API de Acessibilidade quando clica ou foca em um campo
+  document.querySelectorAll("#formAgendamento input").forEach(input => {
+    input.addEventListener("focus", async function() {
+      const nomeCampo = this.name;
+      try {
+        const response = await fetch(`/api/guia-cadastro/?campo=${nomeCampo}`);
+        const resultado = await response.json();
+        if (resultado.status === "sucesso" && resultado.dados_campo) {
+          const info = resultado.dados_campo;
+          falarTexto(`${info.titulo}. ${info.explicacao}`);
+        }
+      } catch (erro) {
+        console.error("Erro ao carregar guia de acessibilidade", erro);
+      }
+    });
   });
 
-  /* ------- Buscar horários (submete o form ao Django) ------- */
   function buscarHorarios() {
     const nome     = document.getElementById("nome").value.trim();
     const telefone = document.getElementById("telefone").value.trim();
@@ -595,219 +488,18 @@
     document.getElementById("formAgendamento").submit();
   }
 
-  const voiceDialog = document.getElementById("voiceDialog");
-  const voiceInstruction = document.getElementById("voiceInstruction");
-  const voiceStatus = document.getElementById("voiceStatus");
-  const voicePreview = document.getElementById("voicePreview");
-  const voiceAction = document.getElementById("voiceAction");
-  const voiceRestart = document.getElementById("voiceRestart");
-  const voiceListening = document.getElementById("voiceListening");
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  let voiceData = {};
-  let voiceReadyToConfirm = false;
-
-  function abrirAgendamentoPorVoz() {
-    if (!SpeechRecognition) {
-      alert("Seu navegador não oferece reconhecimento de voz. Use uma versão recente do Chrome ou preencha o formulário manualmente.");
-      return;
-    }
-
-    voiceData = {
-      nome: document.getElementById("nome").value.trim(),
-      telefone: document.getElementById("telefone").value.trim(),
-      placa: document.getElementById("placa").value.trim(),
-      data: document.getElementById("data").value,
-    };
-    voiceReadyToConfirm = false;
-    voiceInstruction.textContent = "Diga seu nome completo, telefone, placa do veículo e data preferida.";
-    voiceStatus.textContent = "Quando estiver pronto, toque em “Começar a falar”.";
-    voicePreview.style.display = "none";
-    voiceListening.hidden = true;
-    voiceRestart.hidden = true;
-    voiceAction.hidden = false;
-    voiceAction.textContent = "Começar a falar";
-    voiceDialog.showModal();
-  }
-
-  function fecharAgendamentoPorVoz() {
-    voiceDialog.close();
-  }
-
-  function informarDadosNovamente() {
-    voiceData = {};
-    voiceReadyToConfirm = false;
-    voiceInstruction.textContent = "Diga seu nome completo, telefone, placa do veículo e data preferida.";
-    voiceStatus.textContent = "Quando estiver pronto, toque em “Começar a falar”.";
-    voicePreview.style.display = "none";
-    voiceRestart.hidden = true;
-    voiceAction.hidden = false;
-    voiceAction.disabled = false;
-    voiceAction.textContent = "Começar a falar";
-  }
-
-  function iniciarCapturaDeVoz() {
-    if (voiceReadyToConfirm) {
-      preencherFormularioComVoz();
-      fecharAgendamentoPorVoz();
-      sessionStorage.setItem("scrollToAvailableSlots", "true");
-      buscarHorarios();
-      return;
-    }
-
-    const recognition = new SpeechRecognition();
-    recognition.lang = "pt-BR";
-    recognition.continuous = false;
-    recognition.interimResults = true;
-    recognition.maxAlternatives = 1;
-    let speechReceived = false;
-    let recognitionFailed = false;
-    let isCapturing = true;
-    let transcript = "";
-    let interimTranscript = "";
-    let silenceTimer;
-
-    function finalizarCaptura() {
-      isCapturing = false;
-      clearTimeout(silenceTimer);
-      recognition.stop();
-      const completeTranscript = `${transcript} ${interimTranscript}`.trim();
-      if (completeTranscript) {
-        voiceListening.hidden = true;
-        voiceAction.hidden = false;
-        voiceStatus.textContent = `Entendi: “${completeTranscript}”`;
-        processarFala(completeTranscript);
-      }
-    }
-
-    function aguardarSilencio() {
-      clearTimeout(silenceTimer);
-      silenceTimer = setTimeout(finalizarCaptura, 4000);
-    }
-
-    voiceAction.disabled = true;
-    voiceAction.hidden = true;
-    voiceRestart.hidden = true;
-    voiceListening.hidden = false;
-    voiceStatus.textContent = "Estamos ouvindo você… fale todos os dados com calma.";
-
-    recognition.onresult = function(event) {
-      speechReceived = true;
-      interimTranscript = "";
-      for (let index = event.resultIndex; index < event.results.length; index += 1) {
-        const result = event.results[index];
-        if (result.isFinal) {
-          transcript += `${result[0].transcript} `;
-        } else {
-          interimTranscript += result[0].transcript;
-        }
-      }
-      aguardarSilencio();
-    };
-    recognition.onerror = function(event) {
-      if (event.error === "no-speech" && speechReceived) {
-        aguardarSilencio();
-        return;
-      }
-      recognitionFailed = true;
-      isCapturing = false;
-      clearTimeout(silenceTimer);
-      voiceListening.hidden = true;
-      voiceAction.hidden = false;
-      voiceAction.disabled = false;
-      voiceStatus.textContent = event.error === "not-allowed"
-        ? "O acesso ao microfone foi bloqueado. Autorize-o nas configurações do navegador."
-        : "Não foi possível ouvir com clareza. Tente novamente.";
-    };
-    recognition.onend = function() {
-      if (isCapturing && !recognitionFailed) {
-        recognition.start();
-        return;
-      }
-      if (!speechReceived && !recognitionFailed) {
-        voiceListening.hidden = true;
-        voiceAction.hidden = false;
-        voiceAction.disabled = false;
-        voiceStatus.textContent = "Não identificamos uma fala. Tente novamente.";
-      }
-    };
-    recognition.start();
-  }
-
-  async function processarFala(transcript) {
-    voiceAction.disabled = true;
-    voiceStatus.textContent = "Conferindo seus dados…";
-    try {
-      const response = await fetch("{% url 'agendamento_por_voz' %}", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
-        },
-        body: JSON.stringify({ transcript: transcript, dados: voiceData }),
-      });
-      const result = await response.json();
-      if (!response.ok) {
-        throw new Error(result.error || "Não foi possível processar a fala.");
-      }
-
-      voiceData = result.dados;
-      if (result.campos_faltantes.length) {
-        voiceInstruction.textContent = result.instrucao;
-        voiceStatus.textContent = "Toque em “Falar novamente” e diga somente essa informação.";
-        voiceRestart.hidden = true;
-        voiceAction.hidden = false;
-        voiceAction.textContent = "Falar novamente";
-        return;
-      }
-
-      voiceReadyToConfirm = true;
-      voiceInstruction.textContent = "Confira os dados. Se estiverem corretos, confirme para escolher o horário.";
-      voiceStatus.textContent = "";
-      voicePreview.innerHTML = `<strong>Nome:</strong> ${escaparHtml(voiceData.nome)}<br>
-        <strong>Telefone:</strong> ${escaparHtml(voiceData.telefone)}<br>
-        <strong>Placa:</strong> ${escaparHtml(voiceData.placa)}<br>
-        <strong>Data:</strong> ${escaparHtml(voiceData.data)}`;
-      voicePreview.style.display = "block";
-      voiceRestart.hidden = false;
-      voiceAction.hidden = false;
-      voiceAction.textContent = "Confirmar dados";
-    } catch (error) {
-      voiceStatus.textContent = error.message;
-      voiceAction.hidden = false;
-      voiceAction.textContent = "Tentar novamente";
-    } finally {
-      voiceAction.disabled = false;
-    }
-  }
-
-  function preencherFormularioComVoz() {
-    document.getElementById("nome").value = voiceData.nome;
-    document.getElementById("telefone").value = voiceData.telefone;
-    document.getElementById("placa").value = voiceData.placa;
-    document.getElementById("data").value = voiceData.data;
-  }
-
-  function escaparHtml(value) {
-    const element = document.createElement("div");
-    element.textContent = value;
-    return element.innerHTML;
-  }
-
-  /* ------- Seleção de horário (após retorno do Django com horarios no contexto) ------- */
   function initSlots() {
     const botoes = document.querySelectorAll(".horario-btn");
     botoes.forEach(btn => {
       btn.addEventListener("click", function() {
         botoes.forEach(b => b.classList.remove("selected"));
         this.classList.add("selected");
-        document.getElementById("horarioSelecionado") &&
-          (document.getElementById("horarioSelecionado").value = this.dataset.horario);
+        document.getElementById("horarioSelecionado").value = this.dataset.horario;
         document.getElementById("horarioLabel").textContent = this.dataset.horario;
         document.getElementById("confirmBox").classList.remove("hidden");
       });
     });
 
-    // Formata label da data
     const dataInput = document.getElementById("data").value;
     if (dataInput) {
       const [y, m, d] = dataInput.split("-");
@@ -818,7 +510,6 @@
     }
   }
 
-  // Input hidden para horário selecionado (complementa o hidden do form)
   (function() {
     const inp = document.createElement("input");
     inp.type = "hidden";
@@ -841,30 +532,20 @@
 
     if (!horario) { alert("Selecione um horário antes de confirmar."); return; }
 
-    // Mensagem automática para o WhatsApp da oficina
     const [y, m, d] = data.split("-");
     const dataFmt = new Date(+y, +m - 1, +d).toLocaleDateString("pt-BR");
     const msg = `🚗 NOVO AGENDAMENTO\n\nNome: ${nome}\nTelefone: ${telefone}\nPlaca: ${placa}\nData: ${dataFmt}\nHorário: ${horario}`;
     const numero = "5513991403058";
     window.open(`https://wa.me/${numero}?text=${encodeURIComponent(msg)}`, "_blank");
 
-    // Submete ao Django para salvar o agendamento
     document.getElementById("horarioForm").value = horario;
     setTimeout(() => document.getElementById("formAgendamento").submit(), 300);
   }
 
-  /* Inicializa slots se já existirem no DOM (retorno Django) */
   document.addEventListener("DOMContentLoaded", function() {
     if (document.querySelectorAll(".horario-btn").length) {
       document.getElementById("secaoHorarios").classList.remove("hidden");
       initSlots();
-      if (sessionStorage.getItem("scrollToAvailableSlots") === "true") {
-        sessionStorage.removeItem("scrollToAvailableSlots");
-        document.getElementById("secaoHorarios").scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }
     }
   });
 </script>
