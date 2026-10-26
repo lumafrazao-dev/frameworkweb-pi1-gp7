@@ -8,11 +8,9 @@ from urllib.request import Request, urlopen
 
 from django.conf import settings
 from django.http import JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
-from django.shortcuts import render, redirect, get_object_or_404
-from datetime import datetime, timedelta
 from .models import Agendamento
 
 logger = logging.getLogger(__name__)
@@ -30,7 +28,7 @@ def gerar_horarios(data):
     if data.weekday() == 5:  #sab
         inicio = datetime.combine(data, datetime.min.time()).replace(hour=9, minute=0)
         fim = datetime.combine(data, datetime.min.time()).replace(hour=14, minute=0)
-    else:  #swg a ses
+    else:  #seg a sex
         inicio = datetime.combine(data, datetime.min.time()).replace(hour=9, minute=0)
         fim = datetime.combine(data, datetime.min.time()).replace(hour=17, minute=30)
 
@@ -39,7 +37,7 @@ def gerar_horarios(data):
         horarios.append(atual.strftime("%H:%M"))
         atual += timedelta(minutes=30)
 
-    #busca is hrs ocupados no banco
+    #busca os hrs ocupados no banco
     ocupados = Agendamento.objects.filter(data=data).values_list('horario', flat=True)
     # exclui os hrs ocupados
     horarios_disponiveis = [h for h in horarios if h not in ocupados]
@@ -182,7 +180,6 @@ def home(request):
         }
         if data_str:
             data = datetime.strptime(data_str, "%Y-%m-%d").date()
-            #se preenchido salva no banco
             if horario:
                 existe = Agendamento.objects.filter(data=data, horario=horario).exists()
                 if not existe:
@@ -193,21 +190,21 @@ def home(request):
                         data=data,
                         horario=horario
                     )
-                return redirect("/")
-            #gera os hrs disponiveis
-            if data.weekday() != 6:  #block os dom
+                return redirect("escolher_opcao")
+            
+            if data.weekday() != 6:
                 horarios = gerar_horarios(data)
-                
+                 
     return render(request, "agendamento.html", {
         "horarios": horarios,
         "dados": dados
+    })
 
-from django.shortcuts import get_object_or_404, redirect, render
-# (Mantenha as outras importações que você já tem no topo: json, datetime, etc.)
 
 def escolher_opcao(request):
     """Exibe a tela inicial com os botões de Novo Agendamento ou Editar."""
     return render(request, "escolher_opcao.html")
+
 
 def buscar_cadastro_para_editar(request):
     """Recebe o nome digitado, busca no banco e redireciona para edição ou exibe pop-up de erro."""
@@ -215,24 +212,21 @@ def buscar_cadastro_para_editar(request):
     if request.method == "POST":
         nome_busca = request.POST.get("nome_busca", "").strip()
         
-        # Procura o agendamento mais recente com esse nome (ignorando maiúsculas/minúsculas)
         agendamento = Agendamento.objects.filter(nome__icontains=nome_busca).order_by('-data').first()
         
         if agendamento:
-            # Se achou, vai direto para a rota de edição desse agendamento
             return redirect('editar_agendamento', pk=agendamento.pk)
         else:
-            # Se não achou, ativa a bandeira de erro para mostrar o pop-up no HTML
             erro = True
 
     return render(request, "buscar_cadastro.html", {"erro": erro})
+
 
 def editar_agendamento(request, pk):
     """Carrega os dados atuais do agendamento para o usuário alterar e salvar."""
     agendamento = get_object_or_404(Agendamento, pk=pk)
     horarios = []
     
-    # Gera os horários disponíveis da data atual do agendamento
     if agendamento.data.weekday() != 6:
         horarios = gerar_horarios(agendamento.data)
 
@@ -263,7 +257,6 @@ def editar_agendamento(request, pk):
             data = datetime.strptime(data_str, "%Y-%m-%d").date()
             
             if horario:
-                # Verifica se o horário já está ocupado por OUTRO registro
                 existe = Agendamento.objects.filter(data=data, horario=horario).exclude(pk=pk).exists()
                 if not existe:
                     agendamento.nome = nome
@@ -272,7 +265,7 @@ def editar_agendamento(request, pk):
                     agendamento.data = data
                     agendamento.horario = horario
                     agendamento.save()
-                    return redirect("escolher_opcao") # Ou redireciona para uma tela de sucesso
+                    return redirect("escolher_opcao")
             
             if data.weekday() != 6:
                 horarios = gerar_horarios(data)
@@ -282,5 +275,4 @@ def editar_agendamento(request, pk):
         "dados": dados,
         "agendamento": agendamento,
         "editando": True
-    })
     })
