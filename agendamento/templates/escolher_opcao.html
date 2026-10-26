@@ -1,27 +1,84 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>Gaslu Funilaria e Pintura </title>
-    <!-- Adicione seu CSS/Bootstrap aqui -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gaslu Funilaria — Escolher Opção</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #F5F3EE; --surface: #FFFFFF; --surface2: #F0EDE7;
+      --border: rgba(0,0,0,0.10); --border-strong: rgba(0,0,0,0.18);
+      --ink: #1A1814; --ink2: #6B6760; --ink3: #9E9B97;
+      --radius: 12px; --radius-sm: 8px;
+    }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 2rem 1rem 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .page { max-width: 480px; width: 100%; }
+    .header { text-align: center; margin-bottom: 2.5rem; animation: fadeUp 0.5s ease both; }
+    .header-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--ink); color: #fff; font-size: 12px; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase; padding: 6px 14px;
+      border-radius: 40px; margin-bottom: 1rem;
+    }
+    .header-badge svg { width: 14px; height: 14px; }
+    .header h1 {
+      font-family: 'DM Serif Display', serif; font-size: 32px; font-weight: 400;
+      letter-spacing: -0.5px; line-height: 1.15;
+    }
+    .header p { font-size: 15px; color: var(--ink2); margin-top: 8px; }
+    
+    .card {
+      background: var(--surface); border: 0.5px solid var(--border);
+      border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem;
+      animation: fadeUp 0.5s ease both;
+    }
+    .btn-primary, .btn-secondary {
+      width: 100%; padding: 14px; border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500;
+      cursor: pointer; text-align: center; text-decoration: none; display: block;
+      transition: opacity 0.15s, transform 0.1s, background 0.15s;
+    }
+    .btn-primary { background: var(--ink); color: #fff; border: none; margin-bottom: 10px; }
+    .btn-primary:hover { opacity: 0.82; }
+    .btn-secondary { background: var(--surface2); color: var(--ink); border: 0.5px solid var(--border-strong); }
+    .btn-secondary:hover { background: var(--border); }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
-    <div class="container text-center mt-5">
-        <h2>Bem-vindo ao Sistema de Agendamentos</h2>
-        <p class="text-muted">O que você deseja fazer?</p>
-        
-        <div class="row mt-4 justify-content-center">
-            <div class="col-md-4 mb-3">
-                <a href="{% url 'home' %}" class="btn btn-primary btn-lg w-100 p-4">
-                    📅 Novo Agendamento
-                </a>
-            </div>
-            <div class="col-md-4 mb-3">
-                <a href="{% url 'buscar_cadastro' %}" class="btn btn-secondary btn-lg w-100 p-4">
-                    ✏️ Editar Dados de Cadastro ou Agendamento
-                </a>
-            </div>
-        </div>
+<div class="page">
+  <header class="header">
+    <div class="header-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 17h1v1a1 1 0 0 0 2 0v-1h12v1a1 1 0 0 0 2 0v-1h1v-4l-2-6H5l-2 6v4z"/>
+        <circle cx="7.5" cy="17" r="1.5" fill="currentColor" stroke="none"/>
+        <circle cx="16.5" cy="17" r="1.5" fill="currentColor" stroke="none"/>
+      </svg>
+      Funilaria & Pintura
     </div>
+    <h1>Gaslu Funilaria</h1>
+    <p>Selecione o que você deseja fazer</p>
+  </header>
+
+  <div class="card">
+    <a href="{% url 'home' %}" class="btn-primary">📅 Novo Agendamento</a>
+    <a href="{% url 'buscar_cadastro' %}" class="btn-secondary">✏️ Editar Agendamento / Cadastro</a>
+  </div>
+</div>
 </body>
 </html>
