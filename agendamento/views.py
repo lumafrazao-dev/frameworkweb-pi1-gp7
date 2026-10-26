@@ -73,9 +73,10 @@ def _normalize_appointment_data(data):
 
 
 def _extract_appointment_data(transcript, current_data):
-    #api_key = settings.GEMINI_API_KEY
-    #if not api_key:
-        #raise RuntimeError("A integração com o Gemini não está configurada.")
+    api_key = settings.GEMINI_API_KEY
+    if not api_key:
+        raise RuntimeError("A integração com o Gemini não está configurada.")
+    
     model = settings.GEMINI_MODEL
     # Garante que o modelo venha limpo e use o prefixo correto se necessário
     if not model:
