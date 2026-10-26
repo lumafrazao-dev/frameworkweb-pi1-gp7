@@ -71,31 +71,16 @@ def _normalize_appointment_data(data):
 
     return normalized
 
-
 def _extract_appointment_data(transcript, current_data):
     api_key = settings.GEMINI_API_KEY
     if not api_key:
         raise RuntimeError("A integração com o Gemini não está configurada.")
-    
+
     model = settings.GEMINI_MODEL
-    # Garante que o modelo venha limpo e use o prefixo correto se necessário
     if not model:
         model = "gemini-1.5-flash"
-    
-    # Remove prefixos duplicados caso alguém tenha digitado 'models/gemini-...' por engano
     model = model.replace("models/", "")
 
-    query = urlencode({"key": api_key})
-    
-    # URL oficial e padrão da API v1beta do Gemini
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?{query}"
-
-    request = Request(
-        url,
-        data=json.dumps(payload).encode(),
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
     prompt = f"""
 Extraia dados para um agendamento de funilaria no Brasil.
 Data atual: {date.today().isoformat()}.
@@ -106,6 +91,7 @@ Retorne somente um objeto JSON com as chaves nome, telefone, placa e data.
 Mescle dados já coletados com novos dados. Use string vazia para qualquer dado
 que não esteja claro. Converta a data para YYYY-MM-DD; não invente dados.
 """.strip()
+
     payload = {
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {
@@ -122,14 +108,17 @@ que não esteja claro. Converta a data para YYYY-MM-DD; não invente dados.
             },
         },
     }
-    model = settings.GEMINI_MODEL
+
     query = urlencode({"key": api_key})
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?{query}"
+
     request = Request(
-        f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?{query}",
+        url,
         data=json.dumps(payload).encode(),
         headers={"Content-Type": "application/json"},
         method="POST",
     )
+
     try:
         with urlopen(request, timeout=15) as response:
             result = json.load(response)
@@ -141,7 +130,6 @@ que não esteja claro. Converta a data para YYYY-MM-DD; não invente dados.
     except (KeyError, IndexError, TypeError, json.JSONDecodeError) as error:
         logger.warning("Gemini returned an invalid response: %s", error)
         raise RuntimeError("Não foi possível interpretar os dados informados.") from error
-
 
 @require_POST
 def processar_agendamento_por_voz(request):
