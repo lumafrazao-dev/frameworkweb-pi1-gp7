@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gaslu Funilaria — Escolher Opção</title>
+  <title>Gaslu Funilaria — Agendar Orçamento</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
   <style>
@@ -12,174 +12,205 @@
       --bg: #F5F3EE; --surface: #FFFFFF; --surface2: #F0EDE7;
       --border: rgba(0,0,0,0.10); --border-strong: rgba(0,0,0,0.18);
       --ink: #1A1814; --ink2: #6B6760; --ink3: #9E9B97;
+      --green: #2D6A4F; --green-bg: #D8F3DC;
       --radius: 12px; --radius-sm: 8px;
     }
     body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-      min-height: 100vh;
-      padding: 2rem 1rem 4rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink);
+      min-height: 100vh; padding: 2rem 1rem 4rem;
     }
-    .page { max-width: 480px; width: 100%; }
-    .header { text-align: center; margin-bottom: 2.5rem; animation: fadeUp 0.5s ease both; }
+    .page { max-width: 500px; margin: 0 auto; }
+    .header { text-align: center; margin-bottom: 2.5rem; }
     .header-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: var(--ink); color: #fff; font-size: 12px; font-weight: 500;
-      letter-spacing: 0.08em; text-transform: uppercase; padding: 6px 14px;
-      border-radius: 40px; margin-bottom: 1rem;
+      display: inline-flex; align-items: center; gap: 8px; background: var(--ink);
+      color: #fff; font-size: 12px; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 6px 14px; border-radius: 40px; margin-bottom: 1rem;
     }
-    .header-badge svg { width: 14px; height: 14px; }
-    .header h1 {
-      font-family: 'DM Serif Display', serif; font-size: 32px; font-weight: 400;
-      letter-spacing: -0.5px; line-height: 1.15;
-    }
+    .header h1 { font-family: 'DM Serif Display', serif; font-size: 32px; font-weight: 400; }
     .header p { font-size: 15px; color: var(--ink2); margin-top: 8px; }
-    
-    /* Botão de Ouvido flutuante ou no header */
+
     .btn-audio-icone {
       display: inline-flex; align-items: center; justify-content: center;
-      width: 44px; height: 44px; background: var(--surface2);
-      border: 0.5px solid var(--border-strong); color: var(--ink);
-      border-radius: 50%; cursor: pointer; margin-top: 15px;
-      transition: background 0.15s, transform 0.1s;
+      width: 44px; height: 44px; background: var(--surface2); border: 0.5px solid var(--border-strong);
+      color: var(--ink); border-radius: 50%; cursor: pointer; margin-top: 12px; transition: transform 0.1s;
     }
-    .btn-audio-icone:hover { background: var(--border); transform: scale(1.05); }
+    .btn-audio-icone:hover { transform: scale(1.05); }
 
-    .card {
-      background: var(--surface); border: 0.5px solid var(--border);
-      border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem;
-      animation: fadeUp 0.5s ease both;
-    }
-    .btn-primary, .btn-secondary {
-      width: 100%; padding: 14px; border-radius: var(--radius-sm);
-      font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500;
-      cursor: pointer; text-align: center; text-decoration: none; display: block;
-      transition: opacity 0.15s, transform 0.1s, background 0.15s;
-    }
-    .btn-primary { background: var(--ink); color: #fff; border: none; margin-bottom: 10px; }
+    .card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem; }
+    .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 1.25rem; }
+    .step-num { width: 26px; height: 26px; border-radius: 50%; background: var(--ink); color: #fff; font-size: 12px; display: flex; align-items: center; justify-content: center; }
+    .card-header span { font-size: 13px; font-weight: 500; color: var(--ink2); text-transform: uppercase; }
+
+    .field { margin-bottom: 1rem; }
+    .field label { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: var(--ink2); margin-bottom: 6px; }
+    .field input { width: 100%; padding: 11px 13px; font-size: 15px; border: 0.5px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--surface2); outline: none; }
+    .field input:focus { background: var(--surface); border-color: var(--ink); }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    .btn-primary { width: 100%; padding: 13px; background: var(--ink); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 15px; font-weight: 500; cursor: pointer; margin-top: 1.25rem; }
     .btn-primary:hover { opacity: 0.82; }
-    .btn-secondary { background: var(--surface2); color: var(--ink); border: 0.5px solid var(--border-strong); }
+    .btn-secondary { width: 100%; padding: 12px; background: var(--surface2); color: var(--ink); border: 0.5px solid var(--border-strong); border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; text-align: center; text-decoration: none; display: block; margin-top: 8px; }
     .btn-secondary:hover { background: var(--border); }
 
-    /* Pop-up Modal */
-    .modal-backdrop {
-      position: fixed; inset: 0; background: rgba(26, 24, 20, 0.6);
-      display: flex; align-items: center; justify-content: center; padding: 1rem;
-      z-index: 9999; animation: fadeUp 0.2s ease both;
-    }
-    .modal-card {
-      background: var(--surface); width: 100%; max-width: 400px;
-      border-radius: var(--radius); padding: 2rem 1.5rem; border: 0.5px solid var(--border);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.15); text-align: center;
-    }
-    .modal-card h3 {
-      font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 400;
-      margin-bottom: 10px; color: var(--ink);
-    }
-    .modal-card p { font-size: 14px; color: var(--ink2); line-height: 1.5; margin-bottom: 1.5rem; }
-    .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .btn-sim { background: #007bff; color: white; border: none; padding: 12px; border-radius: var(--radius-sm); font-weight: 500; cursor: pointer; }
-    .btn-nao { background: #1A1814; color: white; border: none; padding: 12px; border-radius: var(--radius-sm); font-weight: 500; cursor: pointer; }
+    .slots-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .slot { padding: 11px 4px; text-align: center; font-size: 14px; font-weight: 500; border: 0.5px solid var(--border-strong); border-radius: var(--radius-sm); cursor: pointer; background: #fff; }
+    .slot.selected { background: var(--ink); color: #fff; }
+    .confirm-box { margin-top: 1.25rem; padding: 1rem; background: var(--surface2); border-radius: var(--radius-sm); }
+    .confirm-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .btn-ghost { padding: 10px; background: transparent; border: 0.5px solid var(--border-strong); border-radius: var(--radius-sm); cursor: pointer; }
+    .btn-confirm { padding: 10px; background: var(--ink); color: #fff; border: none; border-radius: var(--radius-sm); cursor: pointer; }
     .hidden { display: none !important; }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
   </style>
 </head>
 <body>
 <div class="page">
   <header class="header">
-    <div class="header-badge">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M3 17h1v1a1 1 0 0 0 2 0v-1h12v1a1 1 0 0 0 2 0v-1h1v-4l-2-6H5l-2 6v4z"/>
-        <circle cx="7.5" cy="17" r="1.5" fill="currentColor" stroke="none"/>
-        <circle cx="16.5" cy="17" r="1.5" fill="currentColor" stroke="none"/>
-      </svg>
-      Funilaria & Pintura
-    </div>
+    <div class="header-badge">Funilaria & Pintura</div>
     <h1>Gaslu Funilaria</h1>
-    <p>Selecione o que você deseja fazer</p>
-
-    <!-- Símbolo de ouvido para reativar o áudio manualmente -->
-    <button type="button" class="btn-audio-icone" id="btnReativarAudio" title="Ativar áudio de ajuda">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;">
+    <p>Agende seu orçamento de forma rápida e prática</p>
+    
+    <button type="button" class="btn-audio-icone" id="btnReativarVoz" title="Ouvir orientações">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px;">
         <path d="M6 9H2v6h4l5 5V4L6 9z"></path>
         <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
       </svg>
     </button>
   </header>
 
-  <div class="card">
-    <a href="{% url 'home' %}" class="btn-primary">📅 Novo Agendamento</a>
-    <a href="{% url 'buscar_cadastro' %}" class="btn-secondary">✏️ Editar Agendamento / Cadastro</a>
-  </div>
-</div>
+  <form method="POST" id="formAgendamento">
+    {% csrf_token %}
+    <div class="card">
+      <div class="card-header">
+        <div class="step-num">1</div>
+        <span>Seus dados</span>
+      </div>
 
-<!-- Pop-up automático de voz -->
-<div id="modalAudioIntro" class="modal-backdrop hidden">
-  <div class="modal-card">
-    <h3>Assistente de Voz</h3>
-    <p>Deseja continuar com o recurso de ajuda por áudio?</p>
-    <div class="modal-actions">
-      <button type="button" class="btn-sim" id="btnSimAudio">Sim, continuar</button>
-      <button type="button" class="btn-nao" id="btnNaoAudio">Desativar áudio</button>
+      <div class="field">
+        <label>Nome completo</label>
+        <input type="text" name="nome" id="nome" placeholder="Ex: João Silva" value="{{ dados.nome|default:'' }}" required>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>Telefone</label>
+          <input type="text" name="telefone" id="telefone" placeholder="(13) 99999-0000" value="{{ dados.telefone|default:'' }}" maxlength="15" required>
+        </div>
+        <div class="field">
+          <label>Placa</label>
+          <input type="text" name="placa" id="placa" placeholder="ABC1234" value="{{ dados.placa|default:'' }}" maxlength="7" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Data preferida</label>
+        <input type="date" name="data" id="data" value="{{ dados.data|default:'' }}" required>
+      </div>
+
+      <input type="hidden" name="horario" id="horarioForm">
+      <button type="button" class="btn-primary" onclick="buscarHorarios()">Ver horários disponíveis</button>
+      
+      <!-- Botão Voltar ao Início solicitado -->
+      <a href="{% url 'escolher_opcao' %}" class="btn-secondary">Voltar ao início</a>
+    </div>
+  </form>
+
+  <div id="secaoHorarios" {% if not horarios %}class="hidden"{% endif %}>
+    <div class="card">
+      <div class="card-header">
+        <div class="step-num">2</div>
+        <span>Horário disponível</span>
+      </div>
+      <p class="date-label" id="dataLabel"></p>
+      <div class="slots-grid" id="slotsGrid">
+        {% if horarios %}
+          {% for h in horarios %}
+            <button type="button" class="slot horario-btn" data-horario="{{ h }}">{{ h }}</button>
+          {% endfor %}
+        {% endif %}
+      </div>
+      <div class="confirm-box hidden" id="confirmBox">
+        <p>Confirmar agendamento para <strong id="horarioLabel"></strong>?</p>
+        <div class="confirm-actions">
+          <button type="button" class="btn-ghost" onclick="voltar()">Cancelar</button>
+          <button type="button" class="btn-confirm" onclick="confirmar()">Confirmar e enviar</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
-  function falar(texto, callback) {
+  function falarTexto(texto) {
+    // Se o usuário desativou o áudio, não executa nada
+    if (localStorage.getItem("audioAjudaAtivo") === "nao") return;
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(texto);
       utterance.lang = 'pt-BR';
       utterance.rate = 1.0;
-      if (callback) utterance.onend = callback;
       window.speechSynthesis.speak(utterance);
     }
   }
 
-  document.addEventListener("DOMContentLoaded", function() {
-    // Ao voltar ao início, garantimos que se o usuário clicar no início, podemos re-perguntar ou respeitar o estado.
-    // Como pedido: "se ele clicar em início ou voltar a página inicial", vamos disparar a introdução novamente se desejar, 
-    // ou resetar o status de pergunta para dar boas-vindas.
-    localStorage.removeItem("audioFoiPerguntado"); 
+  // Controle anti-loop: armazena qual campo foi falado por último para não repetir em cliques seguidos
+  let ultimoCampoFalado = "";
 
-    const textoIntro = "Bem vindo ao sistema de agendamento da Oficina Gaslu Funilaria e Pintura, deseja continua com o áudio de ajuda, clique no botão azul para sim e no botão preto para não?";
+  document.querySelectorAll("#formAgendamento input").forEach(input => {
+    input.addEventListener("focus", async function() {
+      if (localStorage.getItem("audioAjudaAtivo") === "nao") return;
+      
+      const nomeCampo = this.name;
+      if (ultimoCampoFalado === nomeCampo) return; // Evita loop contínuo no mesmo campo
+      ultimoCampoFalado = nomeCampo;
 
-    falar(textoIntro, function() {
-      document.getElementById("modalAudioIntro").classList.remove("hidden");
-    });
-
-    document.getElementById("btnSimAudio").addEventListener("click", function() {
-      localStorage.setItem("audioAjudaAtivo", "sim");
-      localStorage.setItem("audioFoiPerguntado", "true");
-      document.getElementById("modalAudioIntro").classList.add("hidden");
-      falar("Áudio de ajuda ativado.");
-    });
-
-    document.getElementById("btnNaoAudio").addEventListener("click", function() {
-      localStorage.setItem("audioAjudaAtivo", "nao");
-      localStorage.setItem("audioFoiPerguntado", "true");
-      document.getElementById("modalAudioIntro").classList.add("hidden");
-      window.speechSynthesis.cancel();
-    });
-
-    // Reativar pelo símbolo do ouvido
-    document.getElementById("btnReativarAudio").addEventListener("click", function() {
-      localStorage.setItem("audioAjudaAtivo", "sim");
-      localStorage.setItem("audioFoiPerguntado", "true");
-      falar("Áudio de ajuda reativado com sucesso.");
+      try {
+        const response = await fetch(`/api/guia-cadastro/?campo=${nomeCampo}`);
+        const resultado = await response.json();
+        if (resultado.status === "sucesso" && resultado.dados_campo) {
+          const info = resultado.dados_campo;
+          falarTexto(`${info.titulo}. ${info.explicacao}`);
+        }
+      } catch (erro) {
+        // Fallback caso a API não exista ou falhe
+        if (nomeCampo === 'nome') falarTexto("Preencha seu nome completo.");
+        if (nomeCampo === 'telefone') falarTexto("Preencha seu telefone com DDD.");
+        if (nomeCampo === 'placa') falarTexto("Preencha a placa do veículo.");
+        if (nomeCampo === 'data') falarTexto("Escolha a data preferida.");
+      }
     });
   });
+
+  // Reativar voz manualmente pelo ícone de ouvido
+  document.getElementById("btnReativarVoz").addEventListener("click", function() {
+    localStorage.setItem("audioAjudaAtivo", "sim");
+    falarTexto("Áudio de ajuda reativado.");
+  });
+
+  // Demais funções originais
+  document.getElementById("telefone").addEventListener("input", function(e) {
+    let v = e.target.value.replace(/\D/g, "").slice(0, 11);
+    if (v.length > 6) v = v.replace(/(\d{2})(\d{5})(\d+)/, "($1) $2-$3");
+    else if (v.length > 2) v = v.replace(/(\d{2})(\d+)/, "($1) $2");
+    e.target.value = v;
+  });
+
+  document.getElementById("placa").addEventListener("input", function(e) {
+    e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+  });
+
+  function buscarHorarios() {
+    const nome = document.getElementById("nome").value.trim();
+    const telefone = document.getElementById("telefone").value.trim();
+    const placa = document.getElementById("placa").value.trim();
+    const data = document.getElementById("data").value;
+
+    if (!nome || !telefone || !placa || !data) {
+      alert("Preencha todos os campos antes de buscar os horários.");
+      return;
+    }
+    document.getElementById("horarioForm").value = "";
+    document.getElementById("formAgendamento").submit();
+  }
 </script>
 </body>
 </html>
