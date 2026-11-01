@@ -54,6 +54,17 @@
       border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem;
       animation: fadeUp 0.5s ease both;
     }
+    
+    /* Botão de destaque para iniciar a voz (ajuda a pessoa com baixa leitura) */
+    .btn-voz-destaque {
+      width: 100%; padding: 16px; background: #2D6A4F; color: #fff;
+      border: none; border-radius: var(--radius-sm); font-size: 16px; font-weight: 600;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+      margin-bottom: 15px; box-shadow: 0 4px 12px rgba(45, 106, 79, 0.2);
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-voz-destaque:hover { background: #1B4332; transform: scale(1.02); }
+
     .btn-primary, .btn-secondary {
       width: 100%; padding: 14px; border-radius: var(--radius-sm);
       font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500;
@@ -121,12 +132,17 @@
   </header>
 
   <div class="card">
+    <!-- Botão principal de acessibilidade: O usuário com pouca leitura clica aqui para ouvir a orientação PRIMEIRO -->
+    <button type="button" class="btn-voz-destaque" id="btnOuvirOrientacao">
+      🔊 Ouvir orientações da página
+    </button>
+
     <a href="{% url 'home' %}" class="btn-primary">📅 Novo Agendamento</a>
     <a href="{% url 'buscar_cadastro' %}" class="btn-secondary">✏️ Editar Agendamento / Cadastro</a>
   </div>
 </div>
 
-<!-- Pop-up automático -->
+<!-- Pop-up automático (só aparece DEPOIS que a voz é acionada) -->
 <div id="modalAudioIntro" class="modal-backdrop hidden">
   <div class="modal-card">
     <h3>Assistente de Voz</h3>
@@ -139,10 +155,10 @@
 </div>
 
 <script>
-  // Função utilizando exatamente a Web Speech API nativa
+  // Web Speech API Nativa
   function falar(texto, callbackOnEnd) {
     if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel(); // Para falas anteriores
+      window.speechSynthesis.cancel();
       const mensagem = new SpeechSynthesisUtterance(texto);
       mensagem.lang = "pt-BR";
       mensagem.rate = 1.0;
@@ -156,47 +172,42 @@
   }
 
   document.addEventListener("DOMContentLoaded", function() {
+    localStorage.removeItem("audioFoiPerguntado");
+
     const modal = document.getElementById("modalAudioIntro");
-    
-    // Sempre exibe o pop-up logo que a página carrega
-    if (modal) {
-      modal.classList.remove("hidden");
-    }
+    const btnOuvir = document.getElementById("btnOuvirOrientacao");
 
-    // No primeiro clique ou toque na página, o navegador é "destravado" e a Web Speech API fala a introdução
-    const iniciarVozComInteracao = function() {
-      const textoIntro = "Bem vindo ao sistema de agendamento da Oficina Gaslu Funilaria e Pintura, deseja continua com o áudio de ajuda, clique no botão azul para sim e no botão preto para não?";
-      falar(textoIntro);
+    // Quando a pessoa clica no botão verde de acessibilidade, a voz fala PRIMEIRO a introdução completa, 
+    // e assim que TERMINA de falar, o pop-up com as opções Sim/Não aparece na tela.
+    btnOuvir.addEventListener("click", function() {
+      const textoIntro = "Bem vindo ao sistema de agendamento da Oficina Gaslu Funilaria e Pintura. Deseja continuar com o áudio de ajuda?";
       
-      // Remove os ouvintes para tocar apenas na primeira interação
-      document.removeEventListener("click", iniciarVozComInteracao);
-      document.removeEventListener("touchstart", iniciarVozComInteracao);
-    };
+      falar(textoIntro, function() {
+        // Assim que a voz termina de falar a orientação, o pop-up é exibido
+        if (modal) {
+          modal.classList.remove("hidden");
+        }
+      });
+    });
 
-    document.addEventListener("click", iniciarVozComInteracao);
-    document.addEventListener("touchstart", iniciarVozComInteracao);
-
-    // Botão Azul: Sim, continuar
-    document.getElementById("btnSimAudio").addEventListener("click", function(e) {
-      e.stopPropagation();
+    // Botão Azul (Sim, continuar)
+    document.getElementById("btnSimAudio").addEventListener("click", function() {
       localStorage.setItem("audioAjudaAtivo", "sim");
       modal.classList.add("hidden");
       falar("Áudio de ajuda ativado com sucesso.");
     });
 
-    // Botão Preto: Desativar áudio (Garante silêncio absoluto nos formulários)
-    document.getElementById("btnNaoAudio").addEventListener("click", function(e) {
-      e.stopPropagation();
+    // Botão Preto (Desativar áudio) -> Garante silêncio absoluto nos formulários
+    document.getElementById("btnNaoAudio").addEventListener("click", function() {
       localStorage.setItem("audioAjudaAtivo", "nao");
       modal.classList.add("hidden");
       window.speechSynthesis.cancel();
     });
 
-    // Símbolo do ouvido (Para reativar ou desativar manualmente a qualquer momento)
+    // Símbolo do ouvido (Interruptor manual)
     const btnOuvido = document.getElementById("btnReativarAudio");
     if (btnOuvido) {
-      btnOuvido.addEventListener("click", function(e) {
-        e.stopPropagation();
+      btnOuvido.addEventListener("click", function() {
         const statusAtual = localStorage.getItem("audioAjudaAtivo");
         
         if (statusAtual === "sim") {
