@@ -177,10 +177,10 @@
     const modal = document.getElementById("modalAudioIntro");
     const btnOuvir = document.getElementById("btnOuvirOrientacao");
 
-    // Quando a pessoa clica no botão verde de acessibilidade, a voz fala PRIMEIRO a introdução completa, 
+    // Quando a pessoa clica no botão de acessibilidade, a voz fala PRIMEIRO a introdução completa, 
     // e assim que TERMINA de falar, o pop-up com as opções Sim/Não aparece na tela.
     btnOuvir.addEventListener("click", function() {
-      const textoIntro = "Bem vindo ao sistema de agendamento da Oficina Gaslu Funilaria e Pintura. Deseja continuar com o áudio de ajuda?";
+      const textoIntro = "Bem vindo ao sistema de agendamento da Oficina Gaslu Funilaria e Pintura. Deseja continuar com o áudio de ajuda? Clique no botão azul para sim e no botão preto para não.";
       
       falar(textoIntro, function() {
         // Assim que a voz termina de falar a orientação, o pop-up é exibido
@@ -194,13 +194,14 @@
     document.getElementById("btnSimAudio").addEventListener("click", function() {
       localStorage.setItem("audioAjudaAtivo", "sim");
       modal.classList.add("hidden");
-      falar("Áudio de ajuda ativado com sucesso.");
+      falar("O áudio de ajuda continuará ativado.");
     });
 
     // Botão Preto (Desativar áudio) -> Garante silêncio absoluto nos formulários
     document.getElementById("btnNaoAudio").addEventListener("click", function() {
       localStorage.setItem("audioAjudaAtivo", "nao");
       modal.classList.add("hidden");
+      falar("Áudio Desativado.");
       window.speechSynthesis.cancel();
     });
 
