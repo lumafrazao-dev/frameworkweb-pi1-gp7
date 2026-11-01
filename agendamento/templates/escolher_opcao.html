@@ -46,20 +46,27 @@
       text-align: center;
     }
 
-    /* Container para alinhar os botões redondos lado a lado ou empilhados de forma elegante */
-    .opcoes-container {
+    /* Grid para alinhar os 3 botões redondos de forma simétrica */
+    .botoes-grid {
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 1.8rem;
       align-items: center;
       margin-top: 1rem;
     }
 
-    /* Botão Gigante de Áudio (Verde com Pulso) */
-    .btn-audio-gigante {
+    .item-botao {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    /* Padrão Circular Gigante para TODOS os botões */
+    .btn-redondo-gigante {
       width: 90px;
       height: 90px;
-      background: #2D6A4F;
       color: #fff;
       border: none;
       border-radius: 50%;
@@ -67,96 +74,51 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto;
-      box-shadow: 0 8px 22px rgba(45, 106, 79, 0.4);
-      transition: transform 0.15s, background 0.15s;
+      text-decoration: none;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+      transition: transform 0.15s, background 0.15s, box-shadow 0.15s;
+    }
+    .btn-redondo-gigante svg {
+      width: 42px;
+      height: 42px;
+    }
+    .btn-redondo-gigante:hover {
+      transform: scale(1.06);
+      box-shadow: 0 8px 22px rgba(0,0,0,0.2);
+    }
+    .btn-redondo-gigante:active {
+      transform: scale(0.96);
+    }
+
+    /* Cores e efeitos específicos de cada botão */
+    .btn-audio {
+      background: #2D6A4F;
       animation: pulseGlow 2s infinite;
     }
-    .btn-audio-gigante svg { width: 42px; height: 42px; }
-    .btn-audio-gigante:hover { background: #1B4332; transform: scale(1.06); }
+    .btn-audio:hover { background: #1B4332; }
 
-    .legenda-audio {
-      font-size: 15px;
+    .btn-novo {
+      background: var(--ink);
+    }
+    .btn-novo:hover { background: #2A2620; }
+
+    .btn-editar {
+      background: #0066cc;
+    }
+    .btn-editar:hover { background: #004d99; }
+
+    /* Legenda centralizada abaixo de cada ícone */
+    .legenda-botao {
+      font-size: 16px;
       font-weight: 700;
-      color: #2D6A4F;
-      margin-top: 0.5rem;
-      margin-bottom: 0.5rem;
+      color: var(--ink);
     }
 
     .separador {
       width: 100%;
       height: 1px;
       background: var(--border);
-      margin: 0.5rem 0;
-    }
-
-    /* Estilo dos Botões Redondos Principais (Novo Agendamento e Editar) */
-    .btn-redondo-acao {
-      width: 100%;
-      background: var(--surface2);
-      border: 2px solid var(--border-strong);
-      border-radius: 50px; /* Deixa o botão totalmente arredondado nas pontas (pílula gigante) */
-      padding: 16px 20px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      cursor: pointer;
-      text-decoration: none;
-      color: var(--ink);
-      transition: transform 0.15s, background 0.15s, border-color 0.15s, box-shadow 0.15s;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-    }
-    .btn-redondo-acao:hover {
-      background: #E5E1D8;
-      border-color: var(--ink);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
-    }
-    .btn-redondo-acao.primario {
-      background: var(--ink);
-      color: #fff;
-      border-color: var(--ink);
-    }
-    .btn-redondo-acao.primario:hover {
-      background: #2A2620;
-    }
-
-    /* Ícone Circular Interno */
-    .icone-circulo {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.15);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .btn-redondo-acao:not(.primario) .icone-circulo {
-      background: var(--surface);
-      border: 1.5px solid var(--border-strong);
-      color: var(--ink);
-    }
-    .icone-circulo svg {
-      width: 28px;
-      height: 28px;
-    }
-
-    /* Texto do Botão */
-    .texto-botao {
-      text-align: left;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .texto-botao .titulo-acao {
-      font-size: 18px;
-      font-weight: 700;
-    }
-    .texto-botao .sub-acao {
-      font-size: 13px;
-      font-weight: 500;
-      opacity: 0.8;
+      margin: 1.2rem 0;
     }
 
     /* Pop-up Modal Amigável */
@@ -202,48 +164,44 @@
   </header>
 
   <div class="card">
-    <!-- Botão Gigante de Áudio -->
-    <button type="button" class="btn-audio-gigante" id="btnOuvirOrientacao" title="Ouvir orientações">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-      </svg>
-    </button>
-    <div class="legenda-audio">🔊 Toque para ouvir as instruções</div>
+    <div class="botoes-grid">
+      <!-- 1. Botão de Áudio -->
+      <div class="item-botao">
+        <button type="button" class="btn-redondo-gigante btn-audio" id="btnOuvirOrientacao" title="Ouvir orientações">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+          </svg>
+        </button>
+        <span class="legenda-botao" style="color: #2D6A4F;">Toque para ouvir as instruções</span>
+      </div>
 
-    <div class="separador"></div>
+      <div class="separador"></div>
 
-    <div class="opcoes-container">
-      <!-- Botão Redondo: Novo Agendamento (Com Ícone de Calendário) -->
-      <a href="{% url 'home' %}" class="btn-redondo-acao primario">
-        <div class="icone-circulo">
+      <!-- 2. Botão Novo Agendamento -->
+      <div class="item-botao">
+        <a href="{% url 'home' %}" class="btn-redondo-gigante btn-novo" title="Novo agendamento">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
             <line x1="16" y1="2" x2="16" y2="6"></line>
             <line x1="8" y1="2" x2="8" y2="6"></line>
             <line x1="3" y1="10" x2="21" y2="10"></line>
           </svg>
-        </div>
-        <div class="texto-botao">
-          <span class="titulo-acao">Novo Agendamento</span>
-          <span class="sub-acao">Marcar orçamento ou serviço</span>
-        </div>
-      </a>
+        </a>
+        <span class="legenda-botao">Novo agendamento</span>
+      </div>
 
-      <!-- Botão Redondo: Editar / Cancelar (Com Ícone de Lápis) -->
-      <a href="{% url 'buscar_cadastro' %}" class="btn-redondo-acao">
-        <div class="icone-circulo">
+      <!-- 3. Botão Editar Agendamento -->
+      <div class="item-botao">
+        <a href="{% url 'buscar_cadastro' %}" class="btn-redondo-gigante btn-editar" title="Editar agendamento ou cadastro">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
           </svg>
-        </div>
-        <div class="texto-botao">
-          <span class="titulo-acao">Editar ou Cancelar</span>
-          <span class="sub-acao">Consultar agendamento existente</span>
-        </div>
-      </a>
+        </a>
+        <span class="legenda-botao">Editar Agendamento ou Cadastro</span>
+      </div>
     </div>
   </div>
 </div>
@@ -277,7 +235,7 @@
     const btnOuvir = document.getElementById("btnOuvirOrientacao");
 
     btnOuvir.addEventListener("click", function() {
-      const textoIntro = "Bem vindo ao sistema de agendamento da Oficina Gaslu Funilaria e Pintura. Deseja continuar com o áudio de ajuda?";
+      const textoIntro = "Bem vindo ao sistema de agendamento da Oficina Gaslu Funilaria e Pintura. Deseja continuar com o áudio de ajuda? Clique no botão azul para continuar e no botão preto para desativar. Logo em seguida, nos botões abaixo, você terá as opções de realizar um novo agendamento ou editar agendamento.";
       falar(textoIntro, function() {
         if (modal) modal.classList.remove("hidden");
       });
@@ -286,12 +244,13 @@
     document.getElementById("btnSimAudio").addEventListener("click", function() {
       localStorage.setItem("audioAjudaAtivo", "sim");
       modal.classList.add("hidden");
-      falar("Áudio de ajuda ativado com sucesso.");
+      falar("O áudio continuará ativo.");
     });
 
     document.getElementById("btnNaoAudio").addEventListener("click", function() {
       localStorage.setItem("audioAjudaAtivo", "nao");
       modal.classList.add("hidden");
+      falar("O áudio foi desativado."
       window.speechSynthesis.cancel();
     });
   });
