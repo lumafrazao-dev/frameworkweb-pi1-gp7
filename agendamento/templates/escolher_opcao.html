@@ -83,7 +83,6 @@
     .modal-card p { font-size: 14px; color: var(--ink2); line-height: 1.5; margin-bottom: 1.5rem; }
     .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     
-    /* Botão Azul para SIM e Preto para NÃO */
     .btn-sim { background: #007bff; color: white; border: none; padding: 12px; border-radius: var(--radius-sm); font-weight: 500; cursor: pointer; }
     .btn-sim:hover { opacity: 0.9; }
     .btn-nao { background: #1A1814; color: white; border: none; padding: 12px; border-radius: var(--radius-sm); font-weight: 500; cursor: pointer; }
@@ -111,7 +110,7 @@
     <h1>Gaslu Funilaria</h1>
     <p>Selecione o que você deseja fazer</p>
 
-    <!-- Símbolo de ouvido para reativar/desativar o áudio manualmente -->
+    <!-- Símbolo de ouvido para reativar o áudio manualmente -->
     <button type="button" class="btn-audio-icone" id="btnReativarAudio" title="Ativar ou desativar áudio de ajuda">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;">
         <path d="M6 9H2v6h4l5 5V4L6 9z"></path>
@@ -140,69 +139,72 @@
 </div>
 
 <script>
+  // Função utilizando exatamente a Web Speech API nativa
   function falar(texto, callbackOnEnd) {
     if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(texto);
-      utterance.lang = 'pt-BR';
-      utterance.rate = 1.0;
+      window.speechSynthesis.cancel(); // Para falas anteriores
+      const mensagem = new SpeechSynthesisUtterance(texto);
+      mensagem.lang = "pt-BR";
+      mensagem.rate = 1.0;
+      
       if (callbackOnEnd) {
-        utterance.onend = callbackOnEnd;
+        mensagem.onend = callbackOnEnd;
       }
-      window.speechSynthesis.speak(utterance);
-    } else {
-      if (callbackOnEnd) callbackOnEnd();
+      
+      window.speechSynthesis.speak(mensagem);
     }
   }
 
   document.addEventListener("DOMContentLoaded", function() {
-    // Reseta para garantir que toda vez que voltar ao início a introdução ocorra
-    localStorage.removeItem("audioFoiPerguntado");
+    const modal = document.getElementById("modalAudioIntro");
+    
+    // Sempre exibe o pop-up logo que a página carrega
+    if (modal) {
+      modal.classList.remove("hidden");
+    }
 
-    const textoIntro = "Bem vindo ao sistema de agendamento da Oficina Gaslu Funilaria e Pintura, deseja continua com o áudio de ajuda, clique no botão azul para sim e no botão preto para não?";
+    // No primeiro clique ou toque na página, o navegador é "destravado" e a Web Speech API fala a introdução
+    const iniciarVozComInteracao = function() {
+      const textoIntro = "Bem vindo ao sistema de agendamento da Oficina Gaslu Funilaria e Pintura, deseja continua com o áudio de ajuda, clique no botão azul para sim e no botão preto para não?";
+      falar(textoIntro);
+      
+      // Remove os ouvintes para tocar apenas na primeira interação
+      document.removeEventListener("click", iniciarVozComInteracao);
+      document.removeEventListener("touchstart", iniciarVozComInteracao);
+    };
 
-    // 1. Inicia o áudio de boas-vindas imediatamente ao carregar
-    falar(textoIntro, function() {
-      // Assim que o áudio TERMINAR de falar a frase, o pop-up aparece automaticamente
-      document.getElementById("modalAudioIntro").classList.remove("hidden");
-    });
+    document.addEventListener("click", iniciarVozComInteracao);
+    document.addEventListener("touchstart", iniciarVozComInteracao);
 
-    // Caso o navegador bloqueie o som automático por segurança, garantimos que o pop-up apareça em até 3 segundos de qualquer forma
-    setTimeout(function() {
-      const modal = document.getElementById("modalAudioIntro");
-      if (modal.classList.contains("hidden") && !localStorage.getItem("audioFoiPerguntado")) {
-        modal.classList.remove("hidden");
-      }
-    }, 3000);
-
-    // 2. Botão Azul (Sim, continuar)
-    document.getElementById("btnSimAudio").addEventListener("click", function() {
+    // Botão Azul: Sim, continuar
+    document.getElementById("btnSimAudio").addEventListener("click", function(e) {
+      e.stopPropagation();
       localStorage.setItem("audioAjudaAtivo", "sim");
-      localStorage.setItem("audioFoiPerguntado", "true");
-      document.getElementById("modalAudioIntro").classList.add("hidden");
+      modal.classList.add("hidden");
       falar("Áudio de ajuda ativado com sucesso.");
     });
 
-    // 3. Botão Preto (Desativar áudio) -> Garante que nada será emitido nos formulários
-    document.getElementById("btnNaoAudio").addEventListener("click", function() {
+    // Botão Preto: Desativar áudio (Garante silêncio absoluto nos formulários)
+    document.getElementById("btnNaoAudio").addEventListener("click", function(e) {
+      e.stopPropagation();
       localStorage.setItem("audioAjudaAtivo", "nao");
-      localStorage.setItem("audioFoiPerguntado", "true");
-      document.getElementById("modalAudioIntro").classList.add("hidden");
+      modal.classList.add("hidden");
       window.speechSynthesis.cancel();
     });
 
-    // 4. Símbolo do ouvido (Interruptor manual)
+    // Símbolo do ouvido (Para reativar ou desativar manualmente a qualquer momento)
     const btnOuvido = document.getElementById("btnReativarAudio");
     if (btnOuvido) {
-      btnOuvido.addEventListener("click", function() {
-        const estadoAtual = localStorage.getItem("audioAjudaAtivo");
-        if (estadoAtual === "sim") {
+      btnOuvido.addEventListener("click", function(e) {
+        e.stopPropagation();
+        const statusAtual = localStorage.getItem("audioAjudaAtivo");
+        
+        if (statusAtual === "sim") {
           localStorage.setItem("audioAjudaAtivo", "nao");
           window.speechSynthesis.cancel();
           alert("Áudio de ajuda desativado.");
         } else {
           localStorage.setItem("audioAjudaAtivo", "sim");
-          localStorage.setItem("audioFoiPerguntado", "true");
           falar("Áudio de ajuda reativado com sucesso.");
           alert("Áudio de ajuda reativado com sucesso.");
         }
