@@ -26,7 +26,7 @@
       justify-content: center;
     }
     .page { max-width: 480px; width: 100%; }
-    .header { text-align: center; margin-bottom: 2.5rem; animation: fadeUp 0.5s ease both; }
+    .header { text-align: center; margin-bottom: 2rem; animation: fadeUp 0.5s ease both; }
     .header-badge {
       display: inline-flex; align-items: center; gap: 8px;
       background: var(--ink); color: #fff; font-size: 12px; font-weight: 500;
@@ -39,31 +39,50 @@
       letter-spacing: -0.5px; line-height: 1.15;
     }
     .header p { font-size: 15px; color: var(--ink2); margin-top: 8px; }
-    
-    .btn-audio-icone {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 44px; height: 44px; background: var(--surface2);
-      border: 0.5px solid var(--border-strong); color: var(--ink);
-      border-radius: 50%; cursor: pointer; margin-top: 15px;
-      transition: background 0.15s, transform 0.1s;
-    }
-    .btn-audio-icone:hover { background: var(--border); transform: scale(1.05); }
 
     .card {
       background: var(--surface); border: 0.5px solid var(--border);
       border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem;
       animation: fadeUp 0.5s ease both;
+      text-align: center;
     }
-    
-    /* Botão de destaque para iniciar a voz (ajuda a pessoa com baixa leitura) */
-    .btn-voz-destaque {
-      width: 100%; padding: 16px; background: #2D6A4F; color: #fff;
-      border: none; border-radius: var(--radius-sm); font-size: 16px; font-weight: 600;
-      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
-      margin-bottom: 15px; box-shadow: 0 4px 12px rgba(45, 106, 79, 0.2);
-      transition: background 0.15s, transform 0.1s;
+
+    /* Botão Gigante de Áudio (Apenas Ícone Chamativo) */
+    .btn-audio-gigante {
+      width: 90px;
+      height: 90px;
+      background: #2D6A4F;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem auto;
+      box-shadow: 0 8px 20px rgba(45, 106, 79, 0.35);
+      transition: transform 0.15s, background 0.15s, box-shadow 0.15s;
+      animation: pulseGlow 2s infinite;
     }
-    .btn-voz-destaque:hover { background: #1B4332; transform: scale(1.02); }
+    .btn-audio-gigante svg {
+      width: 42px;
+      height: 42px;
+    }
+    .btn-audio-gigante:hover {
+      background: #1B4332;
+      transform: scale(1.08);
+      box-shadow: 0 12px 25px rgba(45, 106, 79, 0.45);
+    }
+    .btn-audio-gigante:active {
+      transform: scale(0.95);
+    }
+
+    /* Pequena legenda de apoio discreta abaixo do botão */
+    .legenda-audio {
+      font-size: 13px;
+      color: var(--ink2);
+      margin-bottom: 1.25rem;
+    }
 
     .btn-primary, .btn-secondary {
       width: 100%; padding: 14px; border-radius: var(--radius-sm);
@@ -105,6 +124,12 @@
       from { opacity: 0; transform: translateY(12px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 0 0 rgba(45, 106, 79, 0.4); }
+      70% { box-shadow: 0 0 0 14px rgba(45, 106, 79, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(45, 106, 79, 0); }
+    }
   </style>
 </head>
 <body>
@@ -120,29 +145,25 @@
     </div>
     <h1>Gaslu Funilaria</h1>
     <p>Selecione o que você deseja fazer</p>
+  </header>
 
-    <!-- Símbolo de ouvido para reativar o áudio manualmente -->
-    <button type="button" class="btn-audio-icone" id="btnReativarAudio" title="Ativar ou desativar áudio de ajuda">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;">
-        <path d="M6 9H2v6h4l5 5V4L6 9z"></path>
+  <div class="card">
+    <!-- Botão Gigante com Ícone de Som (Chamativo e com efeito de pulso para atrair o clique) -->
+    <button type="button" class="btn-audio-gigante" id="btnOuvirOrientacao" title="Ouvir orientações">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
         <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
         <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
       </svg>
     </button>
-  </header>
-
-  <div class="card">
-    <!-- Botão principal de acessibilidade: O usuário com pouca leitura clica aqui para ouvir a orientação PRIMEIRO -->
-    <button type="button" class="btn-voz-destaque" id="btnOuvirOrientacao">
-      🔊 Ouvir orientações da página
-    </button>
+    <div class="legenda-audio">Toque no alto-falante para ouvir as instruções</div>
 
     <a href="{% url 'home' %}" class="btn-primary">📅 Novo Agendamento</a>
     <a href="{% url 'buscar_cadastro' %}" class="btn-secondary">✏️ Editar Agendamento / Cadastro</a>
   </div>
 </div>
 
-<!-- Pop-up automático (só aparece DEPOIS que a voz é acionada) -->
+<!-- Pop-up automático (Aparece após a voz terminar) -->
 <div id="modalAudioIntro" class="modal-backdrop hidden">
   <div class="modal-card">
     <h3>Assistente de Voz</h3>
@@ -155,7 +176,6 @@
 </div>
 
 <script>
-  // Web Speech API Nativa
   function falar(texto, callbackOnEnd) {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
@@ -177,13 +197,11 @@
     const modal = document.getElementById("modalAudioIntro");
     const btnOuvir = document.getElementById("btnOuvirOrientacao");
 
-    // Quando a pessoa clica no botão de acessibilidade, a voz fala PRIMEIRO a introdução completa, 
-    // e assim que TERMINA de falar, o pop-up com as opções Sim/Não aparece na tela.
+    // Quando o usuário clica no ícone gigante de áudio
     btnOuvir.addEventListener("click", function() {
-      const textoIntro = "Bem vindo ao sistema de agendamento da Oficina Gaslu Funilaria e Pintura. Deseja continuar com o áudio de ajuda? Clique no botão azul para sim e no botão preto para não.";
+      const textoIntro = "Bem vindo ao sistema de agendamento da Oficina Gaslu Funilaria e Pintura. Deseja continuar com o áudio de ajuda?";
       
       falar(textoIntro, function() {
-        // Assim que a voz termina de falar a orientação, o pop-up é exibido
         if (modal) {
           modal.classList.remove("hidden");
         }
@@ -194,34 +212,15 @@
     document.getElementById("btnSimAudio").addEventListener("click", function() {
       localStorage.setItem("audioAjudaAtivo", "sim");
       modal.classList.add("hidden");
-      falar("O áudio de ajuda continuará ativado.");
+      falar("Áudio de ajuda ativado com sucesso.");
     });
 
-    // Botão Preto (Desativar áudio) -> Garante silêncio absoluto nos formulários
+    // Botão Preto (Desativar áudio)
     document.getElementById("btnNaoAudio").addEventListener("click", function() {
       localStorage.setItem("audioAjudaAtivo", "nao");
       modal.classList.add("hidden");
-      falar("Áudio Desativado.");
       window.speechSynthesis.cancel();
     });
-
-    // Símbolo do ouvido (Interruptor manual)
-    const btnOuvido = document.getElementById("btnReativarAudio");
-    if (btnOuvido) {
-      btnOuvido.addEventListener("click", function() {
-        const statusAtual = localStorage.getItem("audioAjudaAtivo");
-        
-        if (statusAtual === "sim") {
-          localStorage.setItem("audioAjudaAtivo", "nao");
-          window.speechSynthesis.cancel();
-          alert("Áudio de ajuda desativado.");
-        } else {
-          localStorage.setItem("audioAjudaAtivo", "sim");
-          falar("Áudio de ajuda reativado com sucesso.");
-          alert("Áudio de ajuda reativado com sucesso.");
-        }
-      });
-    }
   });
 </script>
 </body>
