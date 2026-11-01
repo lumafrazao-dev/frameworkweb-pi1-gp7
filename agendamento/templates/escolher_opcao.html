@@ -21,6 +21,7 @@
       min-height: 100vh;
       padding: 2rem 1rem 4rem;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
     }
@@ -39,6 +40,16 @@
     }
     .header p { font-size: 15px; color: var(--ink2); margin-top: 8px; }
     
+    /* Botão de Ouvido flutuante ou no header */
+    .btn-audio-icone {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 44px; height: 44px; background: var(--surface2);
+      border: 0.5px solid var(--border-strong); color: var(--ink);
+      border-radius: 50%; cursor: pointer; margin-top: 15px;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-audio-icone:hover { background: var(--border); transform: scale(1.05); }
+
     .card {
       background: var(--surface); border: 0.5px solid var(--border);
       border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem;
@@ -54,6 +65,28 @@
     .btn-primary:hover { opacity: 0.82; }
     .btn-secondary { background: var(--surface2); color: var(--ink); border: 0.5px solid var(--border-strong); }
     .btn-secondary:hover { background: var(--border); }
+
+    /* Pop-up Modal */
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(26, 24, 20, 0.6);
+      display: flex; align-items: center; justify-content: center; padding: 1rem;
+      z-index: 9999; animation: fadeUp 0.2s ease both;
+    }
+    .modal-card {
+      background: var(--surface); width: 100%; max-width: 400px;
+      border-radius: var(--radius); padding: 2rem 1.5rem; border: 0.5px solid var(--border);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15); text-align: center;
+    }
+    .modal-card h3 {
+      font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 400;
+      margin-bottom: 10px; color: var(--ink);
+    }
+    .modal-card p { font-size: 14px; color: var(--ink2); line-height: 1.5; margin-bottom: 1.5rem; }
+    .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .btn-sim { background: #007bff; color: white; border: none; padding: 12px; border-radius: var(--radius-sm); font-weight: 500; cursor: pointer; }
+    .btn-nao { background: #1A1814; color: white; border: none; padding: 12px; border-radius: var(--radius-sm); font-weight: 500; cursor: pointer; }
+    .hidden { display: none !important; }
+
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(12px); }
       to { opacity: 1; transform: translateY(0); }
@@ -73,6 +106,15 @@
     </div>
     <h1>Gaslu Funilaria</h1>
     <p>Selecione o que você deseja fazer</p>
+
+    <!-- Símbolo de ouvido para reativar o áudio manualmente -->
+    <button type="button" class="btn-audio-icone" id="btnReativarAudio" title="Ativar áudio de ajuda">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;">
+        <path d="M6 9H2v6h4l5 5V4L6 9z"></path>
+        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+      </svg>
+    </button>
   </header>
 
   <div class="card">
@@ -80,5 +122,64 @@
     <a href="{% url 'buscar_cadastro' %}" class="btn-secondary">✏️ Editar Agendamento / Cadastro</a>
   </div>
 </div>
+
+<!-- Pop-up automático de voz -->
+<div id="modalAudioIntro" class="modal-backdrop hidden">
+  <div class="modal-card">
+    <h3>Assistente de Voz</h3>
+    <p>Deseja continuar com o recurso de ajuda por áudio?</p>
+    <div class="modal-actions">
+      <button type="button" class="btn-sim" id="btnSimAudio">Sim, continuar</button>
+      <button type="button" class="btn-nao" id="btnNaoAudio">Desativar áudio</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function falar(texto, callback) {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(texto);
+      utterance.lang = 'pt-BR';
+      utterance.rate = 1.0;
+      if (callback) utterance.onend = callback;
+      window.speechSynthesis.speak(utterance);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    // Ao voltar ao início, garantimos que se o usuário clicar no início, podemos re-perguntar ou respeitar o estado.
+    // Como pedido: "se ele clicar em início ou voltar a página inicial", vamos disparar a introdução novamente se desejar, 
+    // ou resetar o status de pergunta para dar boas-vindas.
+    localStorage.removeItem("audioFoiPerguntado"); 
+
+    const textoIntro = "Bem vindo ao sistema de agendamento da Oficina Gaslu Funilaria e Pintura, deseja continua com o áudio de ajuda, clique no botão azul para sim e no botão preto para não?";
+
+    falar(textoIntro, function() {
+      document.getElementById("modalAudioIntro").classList.remove("hidden");
+    });
+
+    document.getElementById("btnSimAudio").addEventListener("click", function() {
+      localStorage.setItem("audioAjudaAtivo", "sim");
+      localStorage.setItem("audioFoiPerguntado", "true");
+      document.getElementById("modalAudioIntro").classList.add("hidden");
+      falar("Áudio de ajuda ativado.");
+    });
+
+    document.getElementById("btnNaoAudio").addEventListener("click", function() {
+      localStorage.setItem("audioAjudaAtivo", "nao");
+      localStorage.setItem("audioFoiPerguntado", "true");
+      document.getElementById("modalAudioIntro").classList.add("hidden");
+      window.speechSynthesis.cancel();
+    });
+
+    // Reativar pelo símbolo do ouvido
+    document.getElementById("btnReativarAudio").addEventListener("click", function() {
+      localStorage.setItem("audioAjudaAtivo", "sim");
+      localStorage.setItem("audioFoiPerguntado", "true");
+      falar("Áudio de ajuda reativado com sucesso.");
+    });
+  });
+</script>
 </body>
 </html>
