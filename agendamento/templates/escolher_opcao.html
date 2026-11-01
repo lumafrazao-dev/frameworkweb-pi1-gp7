@@ -5,52 +5,51 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gaslu Funilaria — Escolher Opção</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #F5F3EE; --surface: #FFFFFF; --surface2: #F0EDE7;
-      --border: rgba(0,0,0,0.10); --border-strong: rgba(0,0,0,0.18);
-      --ink: #1A1814; --ink2: #6B6760; --ink3: #9E9B97;
-      --radius: 12px; --radius-sm: 8px;
+      --bg: #F5F3EE; --surface: #FFFFFF; --surface2: #EFECE6;
+      --border: rgba(0,0,0,0.15); --border-strong: rgba(0,0,0,0.25);
+      --ink: #11100E; --ink2: #4A4741;
+      --radius: 14px; --radius-sm: 10px;
     }
     body {
       font-family: 'DM Sans', sans-serif;
       background: var(--bg);
       color: var(--ink);
       min-height: 100vh;
-      padding: 2rem 1rem 4rem;
+      padding: 1.5rem 1rem 3rem;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
     }
-    .page { max-width: 480px; width: 100%; }
+    .page { max-width: 520px; width: 100%; }
     .header { text-align: center; margin-bottom: 2rem; animation: fadeUp 0.5s ease both; }
     .header-badge {
       display: inline-flex; align-items: center; gap: 8px;
-      background: var(--ink); color: #fff; font-size: 12px; font-weight: 500;
-      letter-spacing: 0.08em; text-transform: uppercase; padding: 6px 14px;
+      background: var(--ink); color: #fff; font-size: 14px; font-weight: 700;
+      letter-spacing: 0.05em; text-transform: uppercase; padding: 8px 16px;
       border-radius: 40px; margin-bottom: 1rem;
     }
-    .header-badge svg { width: 14px; height: 14px; }
     .header h1 {
-      font-family: 'DM Serif Display', serif; font-size: 32px; font-weight: 400;
-      letter-spacing: -0.5px; line-height: 1.15;
+      font-family: 'DM Serif Display', serif; font-size: 36px; font-weight: 400;
+      letter-spacing: -0.5px; line-height: 1.2; color: var(--ink);
     }
-    .header p { font-size: 15px; color: var(--ink2); margin-top: 8px; }
+    .header p { font-size: 18px; font-weight: 500; color: var(--ink2); margin-top: 10px; }
 
     .card {
-      background: var(--surface); border: 0.5px solid var(--border);
-      border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem;
-      animation: fadeUp 0.5s ease both;
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: var(--radius); padding: 2rem 1.5rem; margin-bottom: 1rem;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.06);
       text-align: center;
     }
 
-    /* Botão Gigante de Áudio (Apenas Ícone Chamativo) */
+    /* Botão Gigante de Áudio para Idosos */
     .btn-audio-gigante {
-      width: 90px;
-      height: 90px;
+      width: 100px;
+      height: 100px;
       background: #2D6A4F;
       color: #fff;
       border: none;
@@ -59,64 +58,54 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 1.5rem auto;
-      box-shadow: 0 8px 20px rgba(45, 106, 79, 0.35);
-      transition: transform 0.15s, background 0.15s, box-shadow 0.15s;
+      margin: 0 auto 1rem auto;
+      box-shadow: 0 8px 22px rgba(45, 106, 79, 0.4);
+      transition: transform 0.15s, background 0.15s;
       animation: pulseGlow 2s infinite;
     }
-    .btn-audio-gigante svg {
-      width: 42px;
-      height: 42px;
-    }
-    .btn-audio-gigante:hover {
-      background: #1B4332;
-      transform: scale(1.08);
-      box-shadow: 0 12px 25px rgba(45, 106, 79, 0.45);
-    }
-    .btn-audio-gigante:active {
-      transform: scale(0.95);
-    }
+    .btn-audio-gigante svg { width: 48px; height: 48px; }
+    .btn-audio-gigante:hover { background: #1B4332; transform: scale(1.06); }
 
-    /* Pequena legenda de apoio discreta abaixo do botão */
     .legenda-audio {
-      font-size: 13px;
-      color: var(--ink2);
-      margin-bottom: 1.25rem;
+      font-size: 16px;
+      font-weight: 700;
+      color: #2D6A4F;
+      margin-bottom: 1.5rem;
     }
 
+    /* Botões Principais Maiores e com Fontes Grandes */
     .btn-primary, .btn-secondary {
-      width: 100%; padding: 14px; border-radius: var(--radius-sm);
-      font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500;
+      width: 100%; padding: 18px 20px; border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif; font-size: 18px; font-weight: 700;
       cursor: pointer; text-align: center; text-decoration: none; display: block;
-      transition: opacity 0.15s, transform 0.1s, background 0.15s;
+      transition: opacity 0.15s, transform 0.1s;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
     }
-    .btn-primary { background: var(--ink); color: #fff; border: none; margin-bottom: 10px; }
-    .btn-primary:hover { opacity: 0.82; }
-    .btn-secondary { background: var(--surface2); color: var(--ink); border: 0.5px solid var(--border-strong); }
-    .btn-secondary:hover { background: var(--border); }
+    .btn-primary { background: var(--ink); color: #fff; border: none; margin-bottom: 12px; }
+    .btn-primary:hover { opacity: 0.88; }
+    .btn-secondary { background: var(--surface2); color: var(--ink); border: 2px solid var(--border-strong); }
+    .btn-secondary:hover { background: #e2ded7; }
 
-    /* Pop-up Modal */
+    /* Pop-up Modal Amigável */
     .modal-backdrop {
-      position: fixed; inset: 0; background: rgba(26, 24, 20, 0.6);
-      display: flex; align-items: center; justify-content: center; padding: 1rem;
-      z-index: 9999; animation: fadeUp 0.2s ease both;
+      position: fixed; inset: 0; background: rgba(17, 16, 14, 0.7);
+      display: flex; align-items: center; justify-content: center; padding: 1.5rem;
+      z-index: 9999;
     }
     .modal-card {
-      background: var(--surface); width: 100%; max-width: 400px;
-      border-radius: var(--radius); padding: 2rem 1.5rem; border: 0.5px solid var(--border);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.15); text-align: center;
+      background: var(--surface); width: 100%; max-width: 440px;
+      border-radius: var(--radius); padding: 2.5rem 1.8rem; border: 2px solid var(--border-strong);
+      box-shadow: c 0 20px 40px rgba(0,0,0,0.2); text-align: center;
     }
     .modal-card h3 {
-      font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 400;
-      margin-bottom: 10px; color: var(--ink);
+      font-family: 'DM Serif Display', serif; font-size: 28px; font-weight: 400;
+      margin-bottom: 12px; color: var(--ink);
     }
-    .modal-card p { font-size: 14px; color: var(--ink2); line-height: 1.5; margin-bottom: 1.5rem; }
-    .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .modal-card p { font-size: 17px; font-weight: 500; color: var(--ink2); line-height: 1.5; margin-bottom: 2rem; }
+    .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     
-    .btn-sim { background: #007bff; color: white; border: none; padding: 12px; border-radius: var(--radius-sm); font-weight: 500; cursor: pointer; }
-    .btn-sim:hover { opacity: 0.9; }
-    .btn-nao { background: #1A1814; color: white; border: none; padding: 12px; border-radius: var(--radius-sm); font-weight: 500; cursor: pointer; }
-    .btn-nao:hover { opacity: 0.8; }
+    .btn-sim { background: #0066cc; color: white; border: none; padding: 16px; border-radius: var(--radius-sm); font-size: 17px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 10px rgba(0,102,204,0.3); }
+    .btn-nao { background: var(--ink); color: white; border: none; padding: 16px; border-radius: var(--radius-sm); font-size: 17px; font-weight: 700; cursor: pointer; }
     
     .hidden { display: none !important; }
 
@@ -124,10 +113,9 @@
       from { opacity: 0; transform: translateY(12px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
     @keyframes pulseGlow {
-      0% { box-shadow: 0 0 0 0 rgba(45, 106, 79, 0.4); }
-      70% { box-shadow: 0 0 0 14px rgba(45, 106, 79, 0); }
+      0% { box-shadow: 0 0 0 0 rgba(45, 106, 79, 0.5); }
+      70% { box-shadow: 0 0 0 16px rgba(45, 106, 79, 0); }
       100% { box-shadow: 0 0 0 0 rgba(45, 106, 79, 0); }
     }
   </style>
@@ -135,39 +123,30 @@
 <body>
 <div class="page">
   <header class="header">
-    <div class="header-badge">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M3 17h1v1a1 1 0 0 0 2 0v-1h12v1a1 1 0 0 0 2 0v-1h1v-4l-2-6H5l-2 6v4z"/>
-        <circle cx="7.5" cy="17" r="1.5" fill="currentColor" stroke="none"/>
-        <circle cx="16.5" cy="17" r="1.5" fill="currentColor" stroke="none"/>
-      </svg>
-      Funilaria & Pintura
-    </div>
-    <h1>Gaslu Funilaria</h1>
-    <p>Selecione o que você deseja fazer</p>
+    <div class="header-badge">Oficina Gaslu</div>
+    <h1>Agendamento Fácil</h1>
+    <p>Escolha o que você deseja fazer abaixo</p>
   </header>
 
   <div class="card">
-    <!-- Botão Gigante com Ícone de Som (Chamativo e com efeito de pulso para atrair o clique) -->
     <button type="button" class="btn-audio-gigante" id="btnOuvirOrientacao" title="Ouvir orientações">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
         <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
         <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
       </svg>
     </button>
-    <div class="legenda-audio">Toque no alto-falante para ouvir as instruções</div>
+    <div class="legenda-audio">🔊 Toque para ouvir as instruções</div>
 
     <a href="{% url 'home' %}" class="btn-primary">📅 Novo Agendamento</a>
-    <a href="{% url 'buscar_cadastro' %}" class="btn-secondary">✏️ Editar Agendamento / Cadastro</a>
+    <a href="{% url 'buscar_cadastro' %}" class="btn-secondary">✏️ Editar / Cancelar Agendamento</a>
   </div>
 </div>
 
-<!-- Pop-up automático (Aparece após a voz terminar) -->
 <div id="modalAudioIntro" class="modal-backdrop hidden">
   <div class="modal-card">
-    <h3>Assistente de Voz</h3>
-    <p>Deseja continuar com o recurso de ajuda por áudio?</p>
+    <h3>Ajuda por Voz</h3>
+    <p>Deseja continuar ouvindo as instruções faladas para preencher o sistema?</p>
     <div class="modal-actions">
       <button type="button" class="btn-sim" id="btnSimAudio">Sim, continuar</button>
       <button type="button" class="btn-nao" id="btnNaoAudio">Desativar áudio</button>
@@ -182,40 +161,29 @@
       const mensagem = new SpeechSynthesisUtterance(texto);
       mensagem.lang = "pt-BR";
       mensagem.rate = 1.0;
-      
-      if (callbackOnEnd) {
-        mensagem.onend = callbackOnEnd;
-      }
-      
+      if (callbackOnEnd) mensagem.onend = callbackOnEnd;
       window.speechSynthesis.speak(mensagem);
     }
   }
 
   document.addEventListener("DOMContentLoaded", function() {
     localStorage.removeItem("audioFoiPerguntado");
-
     const modal = document.getElementById("modalAudioIntro");
     const btnOuvir = document.getElementById("btnOuvirOrientacao");
 
-    // Quando o usuário clica no ícone gigante de áudio
     btnOuvir.addEventListener("click", function() {
       const textoIntro = "Bem vindo ao sistema de agendamento da Oficina Gaslu Funilaria e Pintura. Deseja continuar com o áudio de ajuda?";
-      
       falar(textoIntro, function() {
-        if (modal) {
-          modal.classList.remove("hidden");
-        }
+        if (modal) modal.classList.remove("hidden");
       });
     });
 
-    // Botão Azul (Sim, continuar)
     document.getElementById("btnSimAudio").addEventListener("click", function() {
       localStorage.setItem("audioAjudaAtivo", "sim");
       modal.classList.add("hidden");
       falar("Áudio de ajuda ativado com sucesso.");
     });
 
-    // Botão Preto (Desativar áudio)
     document.getElementById("btnNaoAudio").addEventListener("click", function() {
       localStorage.setItem("audioAjudaAtivo", "nao");
       modal.classList.add("hidden");
