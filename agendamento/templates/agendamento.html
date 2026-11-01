@@ -3,317 +3,98 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gaslu Funilaria — Agendar Orçamento</title>
+  <title>Gaslu Funilaria — Escolher Opção</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg: #F5F3EE;
-      --surface: #FFFFFF;
-      --surface2: #F0EDE7;
-      --border: rgba(0,0,0,0.10);
-      --border-strong: rgba(0,0,0,0.18);
-      --ink: #1A1814;
-      --ink2: #6B6760;
-      --ink3: #9E9B97;
-      --accent: #1A1814;
-      --accent-text: #FFFFFF;
-      --slot-ok: #FFFFFF;
-      --slot-sel: #1A1814;
-      --slot-sel-text: #FFFFFF;
-      --slot-off: #F0EDE7;
-      --slot-off-text: #C5C2BD;
-      --green: #2D6A4F;
-      --green-bg: #D8F3DC;
-      --radius: 12px;
-      --radius-sm: 8px;
+      --bg: #F5F3EE; --surface: #FFFFFF; --surface2: #F0EDE7;
+      --border: rgba(0,0,0,0.10); --border-strong: rgba(0,0,0,0.18);
+      --ink: #1A1814; --ink2: #6B6760; --ink3: #9E9B97;
+      --radius: 12px; --radius-sm: 8px;
     }
-
     body {
       font-family: 'DM Sans', sans-serif;
       background: var(--bg);
       color: var(--ink);
       min-height: 100vh;
       padding: 2rem 1rem 4rem;
-    }
-
-    .page {
-      max-width: 500px;
-      margin: 0 auto;
-    }
-
-    /* Header */
-    .header {
-      text-align: center;
-      margin-bottom: 2.5rem;
-      animation: fadeUp 0.5s ease both;
-    }
-    .header-badge {
-      display: inline-flex;
+      display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 8px;
-      background: var(--ink);
-      color: var(--accent-text);
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      padding: 6px 14px;
-      border-radius: 40px;
-      margin-bottom: 1rem;
+      justify-content: center;
+    }
+    .page { max-width: 480px; width: 100%; }
+    .header { text-align: center; margin-bottom: 2.5rem; animation: fadeUp 0.5s ease both; }
+    .header-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--ink); color: #fff; font-size: 12px; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase; padding: 6px 14px;
+      border-radius: 40px; margin-bottom: 1rem;
     }
     .header-badge svg { width: 14px; height: 14px; }
     .header h1 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 32px;
-      font-weight: 400;
-      color: var(--ink);
-      letter-spacing: -0.5px;
-      line-height: 1.15;
+      font-family: 'DM Serif Display', serif; font-size: 32px; font-weight: 400;
+      letter-spacing: -0.5px; line-height: 1.15;
     }
-    .header p {
-      font-size: 15px;
-      color: var(--ink2);
-      margin-top: 8px;
-    }
-
-    /* Estilo para o botão em formato de ícone */
+    .header p { font-size: 15px; color: var(--ink2); margin-top: 8px; }
+    
+    /* Botão de Ouvido flutuante ou no header */
     .btn-audio-icone {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 44px;
-      height: 44px;
-      background: var(--surface2);
-      border: 0.5px solid var(--border-strong);
-      color: var(--ink);
-      border-radius: 50%; /* Deixa o botão redondo */
-      cursor: pointer;
-      margin-top: 12px;
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 44px; height: 44px; background: var(--surface2);
+      border: 0.5px solid var(--border-strong); color: var(--ink);
+      border-radius: 50%; cursor: pointer; margin-top: 15px;
       transition: background 0.15s, transform 0.1s;
     }
-    .btn-audio-icone svg {
-      width: 20px;
-      height: 20px;
-    }
-    .btn-audio-icone:hover {
-      background: var(--border);
-      transform: scale(1.05);
-    }
-    .btn-audio-icone:active {
-      transform: scale(0.95);
-    }
-    
-    /* Classe para leitores de tela (mantém acessibilidade para deficientes visuais) */
-    .sr-only {
-      position: absolute;
-      width: 1px; height: 1px;
-      padding: 0; margin: -1px;
-      overflow: hidden; clip: rect(0,0,0,0);
-      white-space: nowrap; border: 0;
-    }
-    .btn-audio:hover { background: var(--border); }
+    .btn-audio-icone:hover { background: var(--border); transform: scale(1.05); }
 
-    /* Cards */
     .card {
-      background: var(--surface);
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.5rem;
-      margin-bottom: 1rem;
+      background: var(--surface); border: 0.5px solid var(--border);
+      border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem;
       animation: fadeUp 0.5s ease both;
     }
-
-    .card-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 1.25rem;
+    .btn-primary, .btn-secondary {
+      width: 100%; padding: 14px; border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500;
+      cursor: pointer; text-align: center; text-decoration: none; display: block;
+      transition: opacity 0.15s, transform 0.1s, background 0.15s;
     }
-    .step-num {
-      width: 26px; height: 26px;
-      border-radius: 50%;
-      background: var(--ink);
-      color: #fff;
-      font-size: 12px;
-      font-weight: 500;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
-    .card-header span {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--ink2);
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-
-    /* Fields */
-    .field { margin-bottom: 1rem; }
-    .field:last-child { margin-bottom: 0; }
-    .field label {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--ink2);
-      margin-bottom: 6px;
-    }
-    .field label svg { width: 13px; height: 13px; opacity: 0.6; }
-    .field input {
-      width: 100%;
-      padding: 11px 13px;
-      font-size: 15px;
-      font-family: 'DM Sans', sans-serif;
-      border: 0.5px solid var(--border-strong);
-      border-radius: var(--radius-sm);
-      background: var(--surface2);
-      color: var(--ink);
-      outline: none;
-      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
-    }
-    .field input:focus {
-      background: var(--surface);
-      border-color: var(--ink);
-      box-shadow: 0 0 0 3px rgba(26,24,20,0.07);
-    }
-    .field input::placeholder { color: var(--ink3); }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-    /* Buttons */
-    .btn-primary {
-      width: 100%;
-      padding: 13px;
-      background: var(--ink);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
-      font-weight: 500;
-      cursor: pointer;
-      margin-top: 1.25rem;
-      letter-spacing: 0.01em;
-      transition: opacity 0.15s, transform 0.1s;
-    }
+    .btn-primary { background: var(--ink); color: #fff; border: none; margin-bottom: 10px; }
     .btn-primary:hover { opacity: 0.82; }
-    .btn-primary:active { transform: scale(0.99); }
+    .btn-secondary { background: var(--surface2); color: var(--ink); border: 0.5px solid var(--border-strong); }
+    .btn-secondary:hover { background: var(--border); }
 
-    /* Time slots */
-    .date-label {
-      font-size: 13px;
-      color: var(--ink2);
-      margin-bottom: 1rem;
+    /* Pop-up Modal */
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(26, 24, 20, 0.6);
+      display: flex; align-items: center; justify-content: center; padding: 1rem;
+      z-index: 9999; animation: fadeUp 0.2s ease both;
     }
-    .date-label strong { color: var(--ink); font-weight: 500; }
-    .slots-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
+    .modal-card {
+      background: var(--surface); width: 100%; max-width: 400px;
+      border-radius: var(--radius); padding: 2rem 1.5rem; border: 0.5px solid var(--border);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15); text-align: center;
     }
-    .slot {
-      padding: 11px 4px;
-      text-align: center;
-      font-size: 14px;
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 500;
-      border: 0.5px solid var(--border-strong);
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      color: var(--ink);
-      background: var(--slot-ok);
-      transition: all 0.12s;
+    .modal-card h3 {
+      font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 400;
+      margin-bottom: 10px; color: var(--ink);
     }
-    .slot:hover { background: var(--surface2); }
-    .slot.selected {
-      background: var(--slot-sel);
-      color: var(--slot-sel-text);
-      border-color: var(--slot-sel);
-    }
-
-    /* Confirm box */
-    .confirm-box {
-      margin-top: 1.25rem;
-      padding: 1rem 1.25rem;
-      background: var(--surface2);
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius-sm);
-      animation: fadeUp 0.25s ease both;
-    }
-    .confirm-box p {
-      font-size: 14px;
-      color: var(--ink2);
-      margin-bottom: 12px;
-    }
-    .confirm-box p strong { color: var(--ink); font-weight: 500; }
-    .confirm-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-    .btn-ghost {
-      padding: 10px;
-      background: transparent;
-      border: 0.5px solid var(--border-strong);
-      border-radius: var(--radius-sm);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      color: var(--ink);
-    }
-    .btn-confirm {
-      padding: 10px;
-      background: var(--ink);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-    }
-
-    /* Success */
-    .success-card {
-      background: var(--surface);
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius);
-      padding: 2.5rem 1.5rem;
-      text-align: center;
-      display: none;
-      animation: fadeUp 0.4s ease both;
-    }
-    .success-icon {
-      width: 52px; height: 52px;
-      border-radius: 50%;
-      background: var(--green-bg);
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 1rem;
-    }
-    .success-icon svg { width: 22px; height: 22px; color: var(--green); }
-    .success-card h2 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 22px;
-      font-weight: 400;
-      margin-bottom: 8px;
-    }
-    .success-card p { font-size: 14px; color: var(--ink2); }
-
+    .modal-card p { font-size: 14px; color: var(--ink2); line-height: 1.5; margin-bottom: 1.5rem; }
+    .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .btn-sim { background: #007bff; color: white; border: none; padding: 12px; border-radius: var(--radius-sm); font-weight: 500; cursor: pointer; }
+    .btn-nao { background: #1A1814; color: white; border: none; padding: 12px; border-radius: var(--radius-sm); font-weight: 500; cursor: pointer; }
     .hidden { display: none !important; }
 
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(12px); }
-      to   { opacity: 1; transform: translateY(0); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
 <div class="page">
-
   <header class="header">
     <div class="header-badge">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -324,267 +105,81 @@
       Funilaria & Pintura
     </div>
     <h1>Gaslu Funilaria</h1>
-    <p>Agende seu orçamento de forma rápida e prática</p>
-    
-    <!-- Ícone de orelha para reativar a voz manualmente -->
-    <button type="button" class="btn-audio-icone" onclick="reativarVoz()" title="Ouvir orientações de preenchimento">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <p>Selecione o que você deseja fazer</p>
+
+    <!-- Símbolo de ouvido para reativar o áudio manualmente -->
+    <button type="button" class="btn-audio-icone" id="btnReativarAudio" title="Ativar áudio de ajuda">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;">
         <path d="M6 9H2v6h4l5 5V4L6 9z"></path>
         <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
         <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
       </svg>
-      <span class="sr-only">Ouvir orientações</span>
     </button>
   </header>
 
-  <form method="POST" id="formAgendamento">
-    {% csrf_token %}
+  <div class="card">
+    <a href="{% url 'home' %}" class="btn-primary">📅 Novo Agendamento</a>
+    <a href="{% url 'buscar_cadastro' %}" class="btn-secondary">✏️ Editar Agendamento / Cadastro</a>
+  </div>
+</div>
 
-    <div class="card">
-      <div class="card-header">
-        <div class="step-num">1</div>
-        <span>Seus dados</span>
-      </div>
-
-      <div class="field">
-        <label>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-          </svg>
-          Nome completo
-        </label>
-        <input type="text" name="nome" id="nome"
-               placeholder="Ex: João Silva"
-               value="{{ dados.nome|default:'' }}" required>
-      </div>
-
-      <div class="row">
-        <div class="field">
-          <label>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 3.08 5.18 2 2 0 0 1 5.09 3h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L9.09 10a16 16 0 0 0 6.91 6.91l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
-            </svg>
-            Telefone
-          </label>
-          <input type="text" name="telefone" id="telefone"
-                 placeholder="(13) 99999-0000"
-                 value="{{ dados.telefone|default:'' }}"
-                 maxlength="15" required>
-        </div>
-        <div class="field">
-          <label>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="2" y="7" width="20" height="10" rx="2"/>
-              <path d="M7 12h2M11 12h2M15 12h2" stroke-linecap="round"/>
-            </svg>
-            Placa
-          </label>
-          <input type="text" name="placa" id="placa"
-                 placeholder="ABC1234"
-                 value="{{ dados.placa|default:'' }}"
-                 maxlength="7" required>
-        </div>
-      </div>
-
-      <div class="field">
-        <label>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="4" width="18" height="18" rx="2"/>
-            <path d="M16 2v4M8 2v4M3 10h18"/>
-          </svg>
-          Data preferida
-        </label>
-        <input type="date" name="data" id="data"
-               value="{{ dados.data|default:'' }}" required>
-      </div>
-
-      <input type="hidden" name="horario" id="horarioForm">
-      <button type="button" class="btn-primary" onclick="buscarHorarios()">
-        Ver horários disponíveis
-      </button>
-    </div>
-  </form>
-
-  <!-- Seção de horários -->
-  <div id="secaoHorarios" {% if not horarios %}class="hidden"{% endif %}>
-    <div class="card" style="animation-delay:0.1s">
-      <div class="card-header">
-        <div class="step-num">2</div>
-        <span>Horário disponível</span>
-      </div>
-
-      <p class="date-label" id="dataLabel"></p>
-
-      <div class="slots-grid" id="slotsGrid">
-        {% if horarios %}
-          {% for h in horarios %}
-            <button type="button" class="slot horario-btn" data-horario="{{ h }}">{{ h }}</button>
-          {% endfor %}
-        {% endif %}
-      </div>
-
-      <div class="confirm-box hidden" id="confirmBox">
-        <p>Confirmar agendamento para <strong id="horarioLabel"></strong>?</p>
-        <div class="confirm-actions">
-          <button type="button" class="btn-ghost" onclick="voltar()">Cancelar</button>
-          <button type="button" class="btn-confirm" onclick="confirmar()">Confirmar e enviar</button>
-        </div>
-      </div>
+<!-- Pop-up automático de voz -->
+<div id="modalAudioIntro" class="modal-backdrop hidden">
+  <div class="modal-card">
+    <h3>Assistente de Voz</h3>
+    <p>Deseja continuar com o recurso de ajuda por áudio?</p>
+    <div class="modal-actions">
+      <button type="button" class="btn-sim" id="btnSimAudio">Sim, continuar</button>
+      <button type="button" class="btn-nao" id="btnNaoAudio">Desativar áudio</button>
     </div>
   </div>
-
-  {% if agendamento_confirmado %}
-  <div class="success-card" style="display:block">
-    <div class="success-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-        <polyline points="20 6 9 17 4 12"/>
-      </svg>
-    </div>
-    <h2>Agendamento confirmado!</h2>
-    <p>Você receberá a confirmação via WhatsApp em breve.</p>
-  </div>
-  {% endif %}
-
 </div>
 
 <script>
-  // Máscara de telefone
-  document.getElementById("telefone").addEventListener("input", function(e) {
-    let v = e.target.value.replace(/\D/g, "").slice(0, 11);
-    if (v.length > 6) v = v.replace(/(\d{2})(\d{5})(\d+)/, "($1) $2-$3");
-    else if (v.length > 2) v = v.replace(/(\d{2})(\d+)/, "($1) $2");
-    e.target.value = v;
-  });
-
-  // Máscara de placa
-  document.getElementById("placa").addEventListener("input", function(e) {
-    e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
-  });
-
-  // Leitor de voz nativo e integração com a API de acessibilidade (Guia de Cadastro)
-  function falarTexto(texto) {
+  function falar(texto, callback) {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(texto);
       utterance.lang = 'pt-BR';
       utterance.rate = 1.0;
+      if (callback) utterance.onend = callback;
       window.speechSynthesis.speak(utterance);
     }
   }
 
-  function lerInstrucoesPagina() {
-    falarTexto("Bem-vindo à Gaslu Funilaria. Para agendar seu orçamento, preencha seu nome completo, telefone com DDD, placa do veículo e escolha a data preferida. Depois clique em ver horários disponíveis.");
-  }
-
-  // Consulta à API de Acessibilidade quando clica ou foca em um campo
-  document.querySelectorAll("#formAgendamento input").forEach(input => {
-    input.addEventListener("focus", async function() {
-      const nomeCampo = this.name;
-      try {
-        const response = await fetch(`/api/guia-cadastro/?campo=${nomeCampo}`);
-        const resultado = await response.json();
-        if (resultado.status === "sucesso" && resultado.dados_campo) {
-          const info = resultado.dados_campo;
-          falarTexto(`${info.titulo}. ${info.explicacao}`);
-        }
-      } catch (erro) {
-        console.error("Erro ao carregar guia de acessibilidade", erro);
-      }
-    });
-  });
-
-  function buscarHorarios() {
-    const nome     = document.getElementById("nome").value.trim();
-    const telefone = document.getElementById("telefone").value.trim();
-    const placa    = document.getElementById("placa").value.trim();
-    const data     = document.getElementById("data").value;
-
-    if (!nome || !telefone || !placa || !data) {
-      alert("Preencha todos os campos antes de buscar os horários.");
-      return;
-    }
-
-    document.getElementById("horarioForm").value = "";
-    document.getElementById("formAgendamento").submit();
-  }
-
-  function initSlots() {
-    const botoes = document.querySelectorAll(".horario-btn");
-    botoes.forEach(btn => {
-      btn.addEventListener("click", function() {
-        botoes.forEach(b => b.classList.remove("selected"));
-        this.classList.add("selected");
-        document.getElementById("horarioSelecionado").value = this.dataset.horario;
-        document.getElementById("horarioLabel").textContent = this.dataset.horario;
-        document.getElementById("confirmBox").classList.remove("hidden");
-      });
-    });
-
-    const dataInput = document.getElementById("data").value;
-    if (dataInput) {
-      const [y, m, d] = dataInput.split("-");
-      const dateObj = new Date(+y, +m - 1, +d);
-      const opts = { weekday: "long", day: "2-digit", month: "long", year: "numeric" };
-      document.getElementById("dataLabel").innerHTML =
-        "<strong>" + dateObj.toLocaleDateString("pt-BR", opts) + "</strong>";
-    }
-  }
-
-  (function() {
-    const inp = document.createElement("input");
-    inp.type = "hidden";
-    inp.id = "horarioSelecionado";
-    document.body.appendChild(inp);
-  })();
-
-  function voltar() {
-    document.getElementById("confirmBox").classList.add("hidden");
-    document.querySelectorAll(".horario-btn").forEach(b => b.classList.remove("selected"));
-    document.getElementById("horarioSelecionado").value = "";
-  }
-
-  function confirmar() {
-    const nome     = document.getElementById("nome").value;
-    const telefone = document.getElementById("telefone").value;
-    const placa    = document.getElementById("placa").value;
-    const data     = document.getElementById("data").value;
-    const horario  = document.getElementById("horarioSelecionado").value;
-
-    if (!horario) { alert("Selecione um horário antes de confirmar."); return; }
-
-    const [y, m, d] = data.split("-");
-    const dataFmt = new Date(+y, +m - 1, +d).toLocaleDateString("pt-BR");
-    const msg = `🚗 NOVO AGENDAMENTO\n\nNome: ${nome}\nTelefone: ${telefone}\nPlaca: ${placa}\nData: ${dataFmt}\nHorário: ${horario}`;
-    const numero = "5513991403058";
-    window.open(`https://wa.me/${numero}?text=${encodeURIComponent(msg)}`, "_blank");
-
-    document.getElementById("horarioForm").value = horario;
-    setTimeout(() => document.getElementById("formAgendamento").submit(), 300);
-  }
-
   document.addEventListener("DOMContentLoaded", function() {
-    if (document.querySelectorAll(".horario-btn").length) {
-      document.getElementById("secaoHorarios").classList.remove("hidden");
-      initSlots();
-    }
+    // Ao voltar ao início, garantimos que se o usuário clicar no início, podemos re-perguntar ou respeitar o estado.
+    // Como pedido: "se ele clicar em início ou voltar a página inicial", vamos disparar a introdução novamente se desejar, 
+    // ou resetar o status de pergunta para dar boas-vindas.
+    localStorage.removeItem("audioFoiPerguntado"); 
+
+    const textoIntro = "Bem vindo ao sistema de agendamento da Oficina Gaslu Funilaria e Pintura, deseja continua com o áudio de ajuda, clique no botão azul para sim e no botão preto para não?";
+
+    falar(textoIntro, function() {
+      document.getElementById("modalAudioIntro").classList.remove("hidden");
+    });
+
+    document.getElementById("btnSimAudio").addEventListener("click", function() {
+      localStorage.setItem("audioAjudaAtivo", "sim");
+      localStorage.setItem("audioFoiPerguntado", "true");
+      document.getElementById("modalAudioIntro").classList.add("hidden");
+      falar("Áudio de ajuda ativado.");
+    });
+
+    document.getElementById("btnNaoAudio").addEventListener("click", function() {
+      localStorage.setItem("audioAjudaAtivo", "nao");
+      localStorage.setItem("audioFoiPerguntado", "true");
+      document.getElementById("modalAudioIntro").classList.add("hidden");
+      window.speechSynthesis.cancel();
+    });
+
+    // Reativar pelo símbolo do ouvido
+    document.getElementById("btnReativarAudio").addEventListener("click", function() {
+      localStorage.setItem("audioAjudaAtivo", "sim");
+      localStorage.setItem("audioFoiPerguntado", "true");
+      falar("Áudio de ajuda reativado com sucesso.");
+    });
   });
 </script>
-  <!-- Pop-up de boas-vindas para ativação de voz -->
-  <div id="modalVoz" class="modal-overlay hidden">
-    <div class="modal-card">
-      <div class="modal-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 28px; height: 28px; color: var(--ink);">
-          <path d="M6 9H2v6h4l5 5V4L6 9z"></path>
-          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-        </svg>
-      </div>
-      <h3>Assistente de Voz</h3>
-      <p>Bem-vindo ao sistema de agendamento da Gaslu Funilaria e Pintura. Deseja continuar ouvindo as instruções de agendamento por voz?</p>
-      <div class="modal-actions">
-        <button type="button" class="btn-modal-nao" onclick="responderVoz(false)">Não, obrigado</button>
-        <button type="button" class="btn-modal-ok" onclick="responderVoz(true)">OK</button>
-      </div>
-    </div>
-  </div>
 </body>
 </html>
