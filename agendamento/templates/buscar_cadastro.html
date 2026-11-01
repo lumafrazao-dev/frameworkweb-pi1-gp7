@@ -15,75 +15,42 @@
       --radius: 12px; --radius-sm: 8px;
     }
     body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-      min-height: 100vh;
-      padding: 2rem 1rem 4rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink);
+      min-height: 100vh; padding: 2rem 1rem 4rem; display: flex; align-items: center; justify-content: center;
     }
     .page { max-width: 480px; width: 100%; }
     .header { text-align: center; margin-bottom: 2rem; }
-    .header h1 {
-      font-family: 'DM Serif Display', serif; font-size: 28px; font-weight: 400;
-      letter-spacing: -0.5px; margin-bottom: 6px;
-    }
+    .header h1 { font-family: 'DM Serif Display', serif; font-size: 28px; font-weight: 400; margin-bottom: 6px; }
     .header p { font-size: 14px; color: var(--ink2); }
 
-    .card {
-      background: var(--surface); border: 0.5px solid var(--border);
-      border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem;
+    .btn-audio-icone {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px; background: var(--surface2); border: 0.5px solid var(--border-strong);
+      color: var(--ink); border-radius: 50%; cursor: pointer; margin-top: 10px;
     }
+
+    .card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem; }
     .field { margin-bottom: 1.25rem; }
-    .field label {
-      display: flex; align-items: center; gap: 6px; font-size: 13px;
-      font-weight: 500; color: var(--ink2); margin-bottom: 6px;
-    }
-    .field input {
-      width: 100%; padding: 11px 13px; font-size: 15px; font-family: 'DM Sans', sans-serif;
-      border: 0.5px solid var(--border-strong); border-radius: var(--radius-sm);
-      background: var(--surface2); color: var(--ink); outline: none;
-    }
+    .field label { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: var(--ink2); margin-bottom: 6px; }
+    .field input { width: 100%; padding: 11px 13px; font-size: 15px; border: 0.5px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--surface2); outline: none; }
     .field input:focus { background: var(--surface); border-color: var(--ink); }
     
-    .btn-primary {
-      width: 100%; padding: 13px; background: var(--ink); color: #fff;
-      border: none; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif;
-      font-size: 15px; font-weight: 500; cursor: pointer; transition: opacity 0.15s;
-    }
+    .btn-primary { width: 100%; padding: 13px; background: var(--ink); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 15px; font-weight: 500; cursor: pointer; }
     .btn-primary:hover { opacity: 0.82; }
-    .btn-secondary {
-      width: 100%; padding: 12px; background: transparent; color: var(--ink);
-      border: 0.5px solid var(--border-strong); border-radius: var(--radius-sm);
-      font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
-      cursor: pointer; text-align: center; text-decoration: none; display: block; margin-top: 8px;
-    }
+    
+    .btn-secondary { width: 100%; padding: 12px; background: transparent; color: var(--ink); border: 0.5px solid var(--border-strong); border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; text-align: center; text-decoration: none; display: block; margin-top: 8px; }
     .btn-secondary:hover { background: var(--surface2); }
 
-    /* Modal / Pop-up customizado com o design do site */
-    .modal-backdrop {
-      position: fixed; inset: 0; background: rgba(26, 24, 20, 0.5);
-      display: flex; align-items: center; justify-content: center; padding: 1rem;
-      z-index: 999; animation: fadeUp 0.2s ease both;
-    }
-    .modal-card {
-      background: var(--surface); width: 100%; max-width: 400px;
-      border-radius: var(--radius); padding: 1.5rem; border: 0.5px solid var(--border);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.15); text-align: center;
-    }
-    .modal-card h3 {
-      font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 400;
-      margin-bottom: 10px; color: var(--ink);
-    }
-    .modal-card p { font-size: 14px; color: var(--ink2); line-height: 1.5; margin-bottom: 1.5rem; }
-    .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    /* Botão específico de cancelar agendamento */
+    .btn-cancelar { width: 100%; padding: 12px; background: #c92a2a; color: #fff; border: none; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; text-align: center; text-decoration: none; display: block; margin-top: 8px; cursor: pointer; }
+    .btn-cancelar:hover { opacity: 0.85; }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(26, 24, 20, 0.5); display: flex; align-items: center; justify-content: center; padding: 1rem; z-index: 999; }
+    .modal-card { background: var(--surface); width: 100%; max-width: 400px; border-radius: var(--radius); padding: 1.5rem; border: 0.5px solid var(--border); text-align: center; }
+    .modal-card h3 { font-family: 'DM Serif Display', serif; font-size: 22px; margin-bottom: 10px; }
+    .modal-card p { font-size: 14px; color: var(--ink2); margin-bottom: 1.5rem; }
+    .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
@@ -91,6 +58,13 @@
   <div class="header">
     <h1>Editar Agendamento</h1>
     <p>Insira seus dados para localizar o registro</p>
+    
+    <button type="button" class="btn-audio-icone" id="btnReativarVozBusca" title="Ouvir orientações">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px;">
+        <path d="M6 9H2v6h4l5 5V4L6 9z"></path>
+        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+      </svg>
+    </button>
   </div>
 
   <div class="card">
@@ -98,15 +72,21 @@
       {% csrf_token %}
       <div class="field">
         <label>Nome completo cadastrado</label>
-        <input type="text" name="nome_busca" placeholder="Ex: João Silva" required>
+        <input type="text" name="nome_busca" id="nome_busca" placeholder="Ex: João Silva" required>
       </div>
+      
       <button type="submit" class="btn-primary">Buscar Informações</button>
+      
+      <!-- Botão para Cancelar Agendamento (conforme solicitado) -->
+      <!-- Você pode ajustar o link ou ação caso tenha uma URL específica de cancelamento no Django -->
+      <button type="button" class="btn-cancelar" onclick="confirmarCancelamento()">Cancelar Agendamento</button>
+
+      <!-- Botão Voltar ao Início -->
       <a href="{% url 'escolher_opcao' %}" class="btn-secondary">Voltar ao início</a>
     </form>
   </div>
 </div>
 
-<!-- Pop-up de Erro (Exibido se o Django retornar erro = True) -->
 {% if erro %}
 <div class="modal-backdrop">
   <div class="modal-card">
@@ -120,5 +100,38 @@
 </div>
 {% endif %}
 
+<script>
+  function falarTextoBusca(texto) {
+    if (localStorage.getItem("audioAjudaAtivo") === "nao") return;
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(texto);
+      utterance.lang = 'pt-BR';
+      utterance.rate = 1.0;
+      window.speechSynthesis.speak(utterance);
+    }
+  }
+
+  let ultimoCampoBuscaFalado = "";
+  document.getElementById("nome_busca").addEventListener("focus", function() {
+    if (localStorage.getItem("audioAjudaAtivo") === "nao") return;
+    if (ultimoCampoBuscaFalado === "nome_busca") return;
+    ultimoCampoBuscaFalado = "nome_busca";
+    falarTextoBusca("Insira o nome completo cadastrado para localizar o seu agendamento.");
+  });
+
+  document.getElementById("btnReativarVozBusca").addEventListener("click", function() {
+    localStorage.setItem("audioAjudaAtivo", "sim");
+    falarTextoBusca("Áudio de ajuda ativado.");
+  });
+
+  function confirmarCancelamento() {
+    if (confirm("Tem certeza que deseja cancelar este agendamento?")) {
+      falarTextoBusca("Agendamento cancelado.");
+      // Direciona para uma view de cancelamento ou limpa os dados
+      window.location.href = "{% url 'escolher_opcao' %}";
+    }
+  }
+</script>
 </body>
 </html>
