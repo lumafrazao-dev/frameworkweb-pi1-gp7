@@ -40,7 +40,6 @@
     }
     .header p { font-size: 15px; color: var(--ink2); margin-top: 8px; }
     
-    /* Botão de Ouvido flutuante ou no header */
     .btn-audio-icone {
       display: inline-flex; align-items: center; justify-content: center;
       width: 44px; height: 44px; background: var(--surface2);
@@ -148,35 +147,52 @@
   }
 
   document.addEventListener("DOMContentLoaded", function() {
-    // Ao voltar ao início, garantimos que se o usuário clicar no início, podemos re-perguntar ou respeitar o estado.
-    // Como pedido: "se ele clicar em início ou voltar a página inicial", vamos disparar a introdução novamente se desejar, 
-    // ou resetar o status de pergunta para dar boas-vindas.
-    localStorage.removeItem("audioFoiPerguntado"); 
+    // Verifica se já foi perguntado nesta sessão
+    const audioFoiPerguntado = localStorage.getItem("audioFoiPerguntado");
 
-    const textoIntro = "Bem vindo ao sistema de agendamento da Oficina Gaslu Funilaria e Pintura, deseja continua com o áudio de ajuda, clique no botão azul para sim e no botão preto para não?";
+    if (!audioFoiPerguntado) {
+      // Como navegadores bloqueiam áudio automático sem interação,
+      // disparamos o áudio e o pop-up no PRIMEIRO CLIQUE ou toque na tela.
+      const dispararExperienciaVoz = function() {
+        localStorage.setItem("audioFoiPerguntado", "true");
+        
+        // Remove os ouvintes para disparar apenas uma vez
+        document.removeEventListener("click", dispararExperienciaVoz);
+        document.removeEventListener("touchstart", dispararExperienciaVoz);
 
-    falar(textoIntro, function() {
-      document.getElementById("modalAudioIntro").classList.remove("hidden");
-    });
+        const textoIntro = "Bem vindo ao sistema de agendamento da Oficina Gaslu Funilaria e Pintura, deseja continua com o áudio de ajuda, clique no botão azul para sim e no botão preto para não?";
 
-    document.getElementById("btnSimAudio").addEventListener("click", function() {
+        falar(textoIntro, function() {
+          document.getElementById("modalAudioIntro").classList.remove("hidden");
+        });
+      };
+
+      document.addEventListener("click", dispararExperienciaVoz);
+      document.addEventListener("touchstart", dispararExperienciaVoz);
+    }
+
+    // Botão Sim do Pop-up
+    document.getElementById("btnSimAudio").addEventListener("click", function(e) {
+      e.stopPropagation(); // Evita conflitos de clique
       localStorage.setItem("audioAjudaAtivo", "sim");
-      localStorage.setItem("audioFoiPerguntado", "true");
       document.getElementById("modalAudioIntro").classList.add("hidden");
       falar("Áudio de ajuda ativado.");
     });
 
-    document.getElementById("btnNaoAudio").addEventListener("click", function() {
+    // Botão Não do Pop-up
+    document.getElementById("btnNaoAudio").addEventListener("click", function(e) {
+      e.stopPropagation();
       localStorage.setItem("audioAjudaAtivo", "nao");
-      localStorage.setItem("audioFoiPerguntado", "true");
       document.getElementById("modalAudioIntro").classList.add("hidden");
       window.speechSynthesis.cancel();
     });
 
-    // Reativar pelo símbolo do ouvido
-    document.getElementById("btnReativarAudio").addEventListener("click", function() {
+    // Reativar manualmente pelo símbolo do ouvido
+    document.getElementById("btnReativarAudio").addEventListener("click", function(e) {
+      e.stopPropagation();
       localStorage.setItem("audioAjudaAtivo", "sim");
       localStorage.setItem("audioFoiPerguntado", "true");
+      document.getElementById("modalAudioIntro").classList.add("hidden");
       falar("Áudio de ajuda reativado com sucesso.");
     });
   });
