@@ -264,6 +264,33 @@
       initSlots();
     }
   });
+  // Função para cancelar a seleção do horário e esconder a caixinha de confirmação
+  function voltar() {
+    document.getElementById("confirmBox").classList.add("hidden");
+    document.getElementById("horarioForm").value = "";
+    document.querySelectorAll(".horario-btn").forEach(b => b.classList.remove("selected"));
+    falarTexto("Seleção de horário cancelada. Escolha outro horário se desejar.");
+  }
+
+  // Função para confirmar o agendamento e enviar os dados para o Django
+  function confirmar() {
+    const horario = document.getElementById("horarioForm").value;
+    if (!horario) {
+      alert("Por favor, selecione um horário antes de confirmar.");
+      return;
+    }
+    
+    falarTexto(`Agendamento confirmado para as ${horario}. Enviando dados.`);
+    
+    // Se o botão faz parte do formulário principal, submetemos ele:
+    const form = document.getElementById("formAgendamento");
+    
+    // Garantimos que o campo hidden com o horário está preenchido
+    document.getElementById("horarioForm").value = horario;
+    
+    // Dispara o envio oficial do formulário para o Django salvar no SQLite
+    form.submit();
+  }
 </script>
 </body>
 </html>
