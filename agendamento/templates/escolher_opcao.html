@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> Oficina Gaslu Funilaria e Pintura — Escolher Opção</title>
+  <title> Gaslu Funilaria e Pintura — Agendamentos </title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
   <style>
@@ -158,7 +158,7 @@
 <body>
 <div class="page">
   <header class="header">
-    <div class="header-badge">Oficina Gaslu</div>
+    <div class="header-badge">Oficina Gaslu Funilaria e Pintura</div>
     <h1> Agendamento de Orçamentos </h1>
     <p>Escolha o que você deseja fazer abaixo: </p>
   </header>
@@ -189,7 +189,7 @@
             <line x1="3" y1="10" x2="21" y2="10"></line>
           </svg>
         </a>
-        <span class="legenda-botao">Novo agendamento</span>
+        <span class="legenda-botao">Novo Agendamento</span>
       </div>
 
       <div class="separador"></div>
@@ -204,6 +204,9 @@
         </a>
         <span class="legenda-botao">Editar Agendamento ou Cadastro</span>
       </div>
+
+      <div class="separador"></div>
+      
     </div>
   </div>
 </div>
@@ -237,7 +240,7 @@
     const btnOuvir = document.getElementById("btnOuvirOrientacao");
 
     btnOuvir.addEventListener("click", function() {
-      const textoIntro = "Bem vindo ao sistema de agendamento da Oficina Gaslu Funilaria e Pintura. Deseja continuar com o áudio de ajuda? Clique no botão azul para sim e no botão preto para não. Logo em seguida você poderá escolher entre os botões abaixo entre novo agendamento ou editar agendamento. ";
+      const textoIntro = "Bem vindo ao sistema de agendamento da Oficina Gaslu Funilaria e Pintura. Deseja continuar com o áudio de ajuda? Clique no botão azul para sim e no botão preto para não. ";
       falar(textoIntro, function() {
         if (modal) modal.classList.remove("hidden");
       });
@@ -246,13 +249,13 @@
     document.getElementById("btnSimAudio").addEventListener("click", function() {
       localStorage.setItem("audioAjudaAtivo", "sim");
       modal.classList.add("hidden");
-      falar("Ok, o áudio continua ativado.");
+      falar("Ok, o áudio continua ativo, agora escolha entre as opções abaixo: o botão do meio é para Novos agendamentos e o último botão azul para Editar um Agendamento.");
     });
 
     document.getElementById("btnNaoAudio").addEventListener("click", function() {
       localStorage.setItem("audioAjudaAtivo", "nao");
       modal.classList.add("hidden");
-      falar("Certo, áudio desativado.");
+      falar("Certo, o áudio está desativado.");
       window.speechSynthesis.cancel();
     });
   });
