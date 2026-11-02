@@ -272,24 +272,45 @@
     falarTexto("Seleção de horário cancelada. Escolha outro horário se desejar.");
   }
 
-  // Função para confirmar o agendamento e enviar os dados para o Django
-  function confirmar() {
+ function confirmar() {
     const horario = document.getElementById("horarioForm").value;
+    const nome = document.getElementById("nome").value.trim();
+    const telefone = document.getElementById("telefone").value.trim();
+    const placa = document.getElementById("placa").value.trim();
+    const data = document.getElementById("data").value;
+
     if (!horario) {
       alert("Por favor, selecione um horário antes de confirmar.");
       return;
     }
-    
-    falarTexto(`Agendamento confirmado para as ${horario}. Enviando dados.`);
-    
-    // Se o botão faz parte do formulário principal, submetemos ele:
-    const form = document.getElementById("formAgendamento");
-    
-    // Garantimos que o campo hidden com o horário está preenchido
-    document.getElementById("horarioForm").value = horario;
-    
-    // Dispara o envio oficial do formulário para o Django salvar no SQLite
-    form.submit();
+
+    // Formata a data para ficar bonita na mensagem (ex: 15/10/2026)
+    const [y, m, d] = data.split("-");
+    const dataFormatada = `${d}/${m}/${y}`;
+
+    // Mensagem pronta para o WhatsApp da oficina Gaslu
+    const textoMensagem = `Olá! Meu nome é *${nome}*, meu veículo tem placa *${placa}*. Gostaria de confirmar meu agendamento na Gaslu Funilaria para o dia *${dataFormatada}* às *${horario}*.`;
+    const mensagemCodificada = encodeURIComponent(textoMensagem);
+
+    // Substitui pelo número de WhatsApp da oficina
+    const numeroWhatsApp = "5513991403058"; 
+    const urlWhatsApp = `https://wa.me/${5513991403058}?text=${mensagemCodificada}`;
+
+    // Dá o feedback sonoro de forma segura antes de abrir o WhatsApp
+    if ('speechSynthesis' in window && localStorage.getItem("audioAjudaAtivo") !== "nao") {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance("Agendamento confirmado. Redirecionando para o WhatsApp.");
+      utterance.lang = 'pt-BR';
+      utterance.onend = function() {
+        window.location.href = urlWhatsApp;
+      };
+      window.speechSynthesis.speak(utterance);
+      
+      // Fallback de segurança caso a voz demore muito para disparar o evento onend
+      setTimeout(() => { window.location.href = urlWhatsApp; }, 1500);
+    } else {
+      window.location.href = urlWhatsApp;
+    }
   }
 </script>
 </body>
