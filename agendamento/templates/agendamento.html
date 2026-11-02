@@ -180,10 +180,29 @@
     });
   });
 
-  // Reativar voz manualmente pelo ícone de ouvido
+ // Botão de ouvido (Interruptor Inteligente: Liga e Desliga)
   document.getElementById("btnReativarVoz").addEventListener("click", function() {
-    localStorage.setItem("audioAjudaAtivo", "sim");
-    falarTexto("Áudio de ajuda reativado.");
+    const estadoAtual = localStorage.getItem("audioAjudaAtivo");
+    
+    if (estadoAtual === "sim") {
+      // Se estava ligado, desliga
+      localStorage.setItem("audioAjudaAtivo", "nao");
+      window.speechSynthesis.cancel();
+      // Como a voz foi desativada, usamos alert ou o speech antes de matar tudo, 
+      // mas para garantir que o usuário ouça ou leia, damos o alerta visual e falado:
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance("Áudio de ajuda desativado.");
+        utterance.lang = 'pt-BR';
+        window.speechSynthesis.speak(utterance);
+      }
+      alert("Áudio de ajuda desativado.");
+    } else {
+      // Se estava desligado, liga
+      localStorage.setItem("audioAjudaAtivo", "sim");
+      falarTexto("Áudio de ajuda reativado com sucesso.");
+      alert("Áudio de ajuda ativado.");
+    }
+  });
   });
 
   // Demais funções originais
