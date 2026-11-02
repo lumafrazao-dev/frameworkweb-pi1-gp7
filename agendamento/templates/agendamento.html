@@ -141,7 +141,6 @@
 
 <script>
   function falarTexto(texto) {
-    // Se o usuário desativou o áudio, não executa nada
     if (localStorage.getItem("audioAjudaAtivo") === "nao") return;
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
@@ -152,7 +151,7 @@
     }
   }
 
-  // Controle anti-loop: armazena qual campo foi falado por último para não repetir em cliques seguidos
+  // Controle anti-loop para os campos
   let ultimoCampoFalado = "";
 
   document.querySelectorAll("#formAgendamento input").forEach(input => {
@@ -160,7 +159,7 @@
       if (localStorage.getItem("audioAjudaAtivo") === "nao") return;
       
       const nomeCampo = this.name;
-      if (ultimoCampoFalado === nomeCampo) return; // Evita loop contínuo no mesmo campo
+      if (ultimoCampoFalado === nomeCampo) return;
       ultimoCampoFalado = nomeCampo;
 
       try {
@@ -171,7 +170,6 @@
           falarTexto(`${info.titulo}. ${info.explicacao}`);
         }
       } catch (erro) {
-        // Fallback caso a API não exista ou falhe
         if (nomeCampo === 'nome') falarTexto("Preencha seu nome completo.");
         if (nomeCampo === 'telefone') falarTexto("Preencha seu telefone com DDD.");
         if (nomeCampo === 'placa') falarTexto("Preencha a placa do veículo.");
@@ -180,32 +178,30 @@
     });
   });
 
- // Botão de ouvido (Interruptor Inteligente: Liga e Desliga)
-  document.getElementById("btnReativarVoz").addEventListener("click", function() {
-    const estadoAtual = localStorage.getItem("audioAjudaAtivo");
-    
-    if (estadoAtual === "sim") {
-      // Se estava ligado, desliga
-      localStorage.setItem("audioAjudaAtivo", "nao");
-      window.speechSynthesis.cancel();
-      // Como a voz foi desativada, usamos alert ou o speech antes de matar tudo, 
-      // mas para garantir que o usuário ouça ou leia, damos o alerta visual e falado:
-      if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance("Áudio de ajuda desativado.");
-        utterance.lang = 'pt-BR';
-        window.speechSynthesis.speak(utterance);
+  // Botão de ouvido (Interruptor Inteligente: Liga e Desliga)
+  const btnVoz = document.getElementById("btnReativarVoz");
+  if (btnVoz) {
+    btnVoz.addEventListener("click", function() {
+      const estadoAtual = localStorage.getItem("audioAjudaAtivo");
+      
+      if (estadoAtual === "sim") {
+        localStorage.setItem("audioAjudaAtivo", "nao");
+        window.speechSynthesis.cancel();
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance("Áudio de ajuda desativado.");
+          utterance.lang = 'pt-BR';
+          window.speechSynthesis.speak(utterance);
+        }
+        alert("Áudio de ajuda desativado.");
+      } else {
+        localStorage.setItem("audioAjudaAtivo", "sim");
+        falarTexto("Áudio de ajuda reativado com sucesso.");
+        alert("Áudio de ajuda ativado.");
       }
-      alert("Áudio de ajuda desativado.");
-    } else {
-      // Se estava desligado, liga
-      localStorage.setItem("audioAjudaAtivo", "sim");
-      falarTexto("Áudio de ajuda reativado com sucesso.");
-      alert("Áudio de ajuda ativado.");
-    }
-  });
-  });
+    });
+  }
 
-  // Demais funções originais
+  // Máscaras automáticas
   document.getElementById("telefone").addEventListener("input", function(e) {
     let v = e.target.value.replace(/\D/g, "").slice(0, 11);
     if (v.length > 6) v = v.replace(/(\d{2})(\d{5})(\d+)/, "($1) $2-$3");
@@ -230,6 +226,44 @@
     document.getElementById("horarioForm").value = "";
     document.getElementById("formAgendamento").submit();
   }
+
+  // Torna os botões de horário clicáveis após a busca
+  function initSlots() {
+    const botoes = document.querySelectorAll(".horario-btn");
+    botoes.forEach(btn => {
+      btn.onclick = function() {
+        botoes.forEach(b => b.classList.remove("selected"));
+        this.classList.add("selected");
+        
+        const horarioEscolhido = this.dataset.horario;
+        document.getElementById("horarioForm").value = horarioEscolhido;
+        document.getElementById("horarioLabel").textContent = horarioEscolhido;
+        document.getElementById("confirmBox").classList.remove("hidden");
+        
+        falarTexto(`Horário ${horarioEscolhido} selecionado. Clique em confirmar.`);
+      };
+    });
+
+    const dataInput = document.getElementById("data").value;
+    if (dataInput) {
+      const [y, m, d] = dataInput.split("-");
+      const dateObj = new Date(+y, +m - 1, +d);
+      const opts = { weekday: "long", day: "2-digit", month: "long", year: "numeric" };
+      const labelEl = document.getElementById("dataLabel");
+      if (labelEl) {
+        labelEl.innerHTML = "<strong>" + dateObj.toLocaleDateString("pt-BR", opts) + "</strong>";
+      }
+    }
+  }
+
+  // Executa assim que a página carrega caso já existam horários na tela
+  document.addEventListener("DOMContentLoaded", function() {
+    if (document.querySelectorAll(".horario-btn").length > 0) {
+      const secao = document.getElementById("secaoHorarios");
+      if (secao) secao.classList.remove("hidden");
+      initSlots();
+    }
+  });
 </script>
 </body>
 </html>
