@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gaslu Funilaria — Buscar Cadastro</title>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
+
+<style>
+/* Corrigido o asterisco aqui para resetar os estilos corretamente */
+* { box-sizing:border-box; margin:0; padding:0; }
+
+body {
+font-family:'DM Sans',sans-serif;
+background:#F5F3EE;
+color:#1A1814;
+min-height:100vh;
+padding:2rem 1rem;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.page { width:100%; max-width:480px; }
+
+.header { text-align:center; margin-bottom:2rem; }
+
+.header h1 {
+font-family:'DM Serif Display',serif;
+font-size:28px;
+font-weight:400;
+}
+
+.header p { margin-top:8px; color:#6B6760; }
+
+.card {
+background:white;
+border:1px solid rgba(0,0,0,.12);
+border-radius:12px;
+padding:1.5rem;
+}
+
+.field { margin-bottom:1.2rem; }
+
+.field label {
+display:block;
+font-size:13px;
+font-weight:500;
+margin-bottom:6px;
+color:#6B6760;
+}
+
+.field input {
+width:100%;
+padding:12px;
+font-size:15px;
+border:1px solid rgba(0,0,0,.2);
+border-radius:8px;
+background:#F0EDE7;
+}
+
+button, a { font-family:inherit; cursor:pointer; }
+
+.btn-primary {
+width:100%;
+padding:13px;
+background:#1A1814;
+color:white;
+border:0;
+border-radius:8px;
+font-size:15px;
+}
+
+.btn-secondary {
+display:block;
+width:100%;
+padding:12px;
+text-align:center;
+text-decoration:none;
+color:#1A1814;
+border:1px solid rgba(0,0,0,.2);
+border-radius:8px;
+margin-top:8px;
+}
+
+.alert {
+background:#fff0ed;
+color:#a32620;
+padding:12px;
+border-radius:8px;
+margin-bottom:15px;
+font-size:14px;
+}
+
+.agendamento-card {
+background: #F9F8F6;
+border: 1px solid rgba(0,0,0,.1);
+border-radius: 8px;
+padding: 12px;
+margin-top: 15px;
+}
+
+.acoes-btns {
+display: flex;
+gap: 10px;
+margin-top: 10px;
+}
+
+.btn-editar {
+flex: 1;
+padding: 8px;
+background: orange;
+color: white;
+text-align: center;
+text-decoration: none;
+border-radius: 6px;
+font-size: 14px;
+}
+
+.btn-cancelar {
+flex: 1;
+padding: 8px;
+background: #a32620;
+color: white;
+text-align: center;
+text-decoration: none;
+border-radius: 6px;
+font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+<header class="header">
+<h1>Localizar Agendamento</h1>
+<p>Informe seu nome completo para localizar seu cadastro</p>
+</header>
+
+<div class="card">
+
+{% if erro %}
+<div class="alert">
+Não encontramos um agendamento com esse nome.
+Confira o nome completo e tente novamente.
+</div>
+{% endif %}
+
+<form method="POST" action="{% url 'buscar_cadastro' %}">
+
+{% csrf_token %}
+
+<div class="field">
+<label>Nome completo cadastrado</label>
+
+<input
+type="text"
+name="nome_busca"
+id="nome_busca"
+placeholder="Ex: João Silva"
+autocomplete="name"
+required>
+</div>
+
+<button type="submit" class="btn-primary">
+Buscar meu agendamento
+</button>
+
+</form>
+
+<!-- Exibe os agendamentos encontrados após a busca -->
+{% if agendamentos %}
+    <div style="margin-top: 20px;">
+        <h3 style="font-size: 16px; margin-bottom: 10px;">Agendamentos Encontrados:</h3>
+        {% for item in agendamentos %}
+            <div class="agendamento-card">
+                <p><strong>Nome:</strong> {{ item.nome }}</p>
+                <p><strong>Placa:</strong> {{ item.placa }}</p>
+                <p><strong>Data:</strong> {{ item.data }} às {{ item.horario }}</p>
+                
+                <div class="acoes-btns">
+                    <a href="{% url 'editar_agendamento' item.id %}" class="btn-editar">Alterar</a>
+                    <a href="{% url 'cancelar_agendamento' item.id %}" class="btn-cancelar">Cancelar</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<a href="{% url 'escolher_opcao' %}" class="btn-secondary">
+Voltar ao início
+</a>
+
+</div>
+</div>
+
+<script>
+function falar(texto) {
+if (
+localStorage.getItem("audioAjudaAtivo") !== "nao" &&
+"speechSynthesis" in window
+) {
+speechSynthesis.cancel();
+
+const voz = new SpeechSynthesisUtterance(texto);
+voz.lang = "pt-BR";
+speechSynthesis.speak(voz);
+}
+}
+
+document.getElementById("nome_busca").addEventListener("focus", function() {
+falar("Digite seu nome completo cadastrado para localizar seu agendamento.");
+});
+</script>
+
+</body>
+</html>
