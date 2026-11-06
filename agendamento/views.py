@@ -121,17 +121,15 @@ def escolher_opcao(request):
     return render(request, "escolher_opcao.html")
 
 
-
 def buscar_cadastro_para_editar(request):
     erro = False
     agendamentos = []
 
     if request.method == "POST":
-        # Pega apenas o nome digitado pelo cliente
+        # Pega o nome digitado pelo cliente para buscar no banco
         nome = request.POST.get("nome_busca", "").strip()
 
         if nome:
-            # Busca no banco SQLite apenas pelo campo nome (ignorando maiúsculas/minúsculas)
             agendamentos = list(
                 Agendamento.objects.filter(
                     nome__icontains=nome
@@ -143,10 +141,11 @@ def buscar_cadastro_para_editar(request):
         else:
             erro = True
 
-    return render(request, "busca_cadastro.html", {
+    return render(request, "agendamento/busca_cadastro.html", {
         "erro": erro,
         "agendamentos": agendamentos,
     })
+
 
 def editar_agendamento(request, pk):
     agendamento = get_object_or_404(Agendamento, pk=pk)
@@ -200,4 +199,16 @@ def editar_agendamento(request, pk):
         "dados": dados,
         "agendamento": agendamento,
         "editando": True
+    })
+
+
+def cancelar_agendamento(request, pk):
+    """Função para excluir/cancelar o agendamento do banco SQLite"""
+    agendamento = get_object_or_404(Agendamento, pk=pk)
+    if request.method == "POST":
+        agendamento.delete()
+        return redirect("escolher_opcao")
+    
+    return render(request, "agendamento/confirmar_cancelamento.html", {
+        "agendamento": agendamento
     })
