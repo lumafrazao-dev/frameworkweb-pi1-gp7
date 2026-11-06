@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
 
 <style>
+/* Corrigido o asterisco aqui para resetar os estilos corretamente */
 * { box-sizing:border-box; margin:0; padding:0; }
 
 body {
@@ -91,6 +92,42 @@ border-radius:8px;
 margin-bottom:15px;
 font-size:14px;
 }
+
+.agendamento-card {
+background: #F9F8F6;
+border: 1px solid rgba(0,0,0,.1);
+border-radius: 8px;
+padding: 12px;
+margin-top: 15px;
+}
+
+.acoes-btns {
+display: flex;
+gap: 10px;
+margin-top: 10px;
+}
+
+.btn-editar {
+flex: 1;
+padding: 8px;
+background: orange;
+color: white;
+text-align: center;
+text-decoration: none;
+border-radius: 6px;
+font-size: 14px;
+}
+
+.btn-cancelar {
+flex: 1;
+padding: 8px;
+background: #a32620;
+color: white;
+text-align: center;
+text-decoration: none;
+border-radius: 6px;
+font-size: 14px;
+}
 </style>
 </head>
 
@@ -133,6 +170,25 @@ Buscar meu agendamento
 </button>
 
 </form>
+
+<!-- Exibe os agendamentos encontrados após a busca -->
+{% if agendamentos %}
+    <div style="margin-top: 20px;">
+        <h3 style="font-size: 16px; margin-bottom: 10px;">Agendamentos Encontrados:</h3>
+        {% for item in agendamentos %}
+            <div class="agendamento-card">
+                <p><strong>Nome:</strong> {{ item.nome }}</p>
+                <p><strong>Placa:</strong> {{ item.placa }}</p>
+                <p><strong>Data:</strong> {{ item.data }} às {{ item.horario }}</p>
+                
+                <div class="acoes-btns">
+                    <a href="{% url 'editar_agendamento' item.id %}" class="btn-editar">Alterar</a>
+                    <a href="{% url 'cancelar_agendamento' item.id %}" class="btn-cancelar">Cancelar</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
 
 <a href="{% url 'escolher_opcao' %}" class="btn-secondary">
 Voltar ao início
