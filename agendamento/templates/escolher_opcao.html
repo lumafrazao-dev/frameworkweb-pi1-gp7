@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> Gaslu Funilaria e Pintura — Agendamentos </title>
+  <title> Gaslu Funilaria e Pintura — Opções </title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
   <style>
@@ -15,15 +15,8 @@
       --radius: 14px; --radius-sm: 10px;
     }
     body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-      min-height: 100vh;
-      padding: 1.5rem 1rem 3rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink);
+      min-height: 100vh; padding: 1.5rem 1rem 3rem; display: flex; flex-direction: column; align-items: center; justify-content: center;
     }
     .page { max-width: 520px; width: 100%; }
     .header { text-align: center; margin-bottom: 2rem; animation: fadeUp 0.5s ease both; }
@@ -33,126 +26,33 @@
       letter-spacing: 0.05em; text-transform: uppercase; padding: 8px 16px;
       border-radius: 40px; margin-bottom: 1rem;
     }
-    .header h1 {
-      font-family: 'DM Serif Display', serif; font-size: 36px; font-weight: 400;
-      letter-spacing: -0.5px; line-height: 1.2; color: var(--ink);
-    }
+    .header h1 { font-family: 'DM Serif Display', serif; font-size: 36px; font-weight: 400; letter-spacing: -0.5px; line-height: 1.2; color: var(--ink); }
     .header p { font-size: 18px; font-weight: 500; color: var(--ink2); margin-top: 10px; }
-
-    .card {
-      background: var(--surface); border: 1.5px solid var(--border);
-      border-radius: var(--radius); padding: 2rem 1.5rem; margin-bottom: 1rem;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.06);
-      text-align: center;
-    }
-
-    /* Grid para alinhar os 3 botões redondos de forma simétrica */
-    .botoes-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 1.8rem;
-      align-items: center;
-      margin-top: 1rem;
-    }
-
-    .item-botao {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      width: 100%;
-    }
-
-    /* Padrão Circular Gigante para TODOS os botões */
-    .btn-redondo-gigante {
-      width: 90px;
-      height: 90px;
-      color: #fff;
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-      transition: transform 0.15s, background 0.15s, box-shadow 0.15s;
-    }
-    .btn-redondo-gigante svg {
-      width: 42px;
-      height: 42px;
-    }
-    .btn-redondo-gigante:hover {
-      transform: scale(1.06);
-      box-shadow: 0 8px 22px rgba(0,0,0,0.2);
-    }
-    .btn-redondo-gigante:active {
-      transform: scale(0.96);
-    }
-
-    /* Cores e efeitos específicos de cada botão */
-    .btn-audio {
-      background: #2D6A4F;
-      animation: pulseGlow 2s infinite;
-    }
+    .card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 6px 16px rgba(0,0,0,0.06); text-align: center; }
+    .botoes-grid { display: flex; flex-direction: column; gap: 1.8rem; align-items: center; margin-top: 1rem; }
+    .item-botao { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; }
+    .btn-redondo-gigante { width: 90px; height: 90px; color: #fff; border: none; border-radius: 50%; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; box-shadow: 0 6px 18px rgba(0,0,0,0.15); transition: transform 0.15s, background 0.15s, box-shadow 0.15s; }
+    .btn-redondo-gigante svg { width: 42px; height: 42px; }
+    .btn-redondo-gigante:hover { transform: scale(1.06); box-shadow: 0 8px 22px rgba(0,0,0,0.2); }
+    .btn-redondo-gigante:active { transform: scale(0.96); }
+    .btn-audio { background: #2D6A4F; animation: pulseGlow 2s infinite; }
     .btn-audio:hover { background: #1B4332; }
-
-    .btn-novo {
-      background: var(--ink);
-    }
+    .btn-novo { background: var(--ink); }
     .btn-novo:hover { background: #2A2620; }
-
-    .btn-editar {
-      background: #0066cc;
-    }
+    .btn-editar { background: #0066cc; }
     .btn-editar:hover { background: #004d99; }
-
-    /* Legenda centralizada abaixo de cada ícone */
-    .legenda-botao {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--ink);
-    }
-
-    .separador {
-      width: 100%;
-      height: 1px;
-      background: var(--border);
-      margin: 1.2rem 0;
-    }
-
-    /* Pop-up Modal Amigável */
-    .modal-backdrop {
-      position: fixed; inset: 0; background: rgba(17, 16, 14, 0.7);
-      display: flex; align-items: center; justify-content: center; padding: 1.5rem;
-      z-index: 9999;
-    }
-    .modal-card {
-      background: var(--surface); width: 100%; max-width: 440px;
-      border-radius: var(--radius); padding: 2.5rem 1.8rem; border: 2px solid var(--border-strong);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.2); text-align: center;
-    }
-    .modal-card h3 {
-      font-family: 'DM Serif Display', serif; font-size: 28px; font-weight: 400;
-      margin-bottom: 12px; color: var(--ink);
-    }
+    .legenda-botao { font-size: 16px; font-weight: 700; color: var(--ink); }
+    .separador { width: 100%; height: 1px; background: var(--border); margin: 1.2rem 0; }
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(17, 16, 14, 0.7); display: flex; align-items: center; justify-content: center; padding: 1.5rem; z-index: 9999; }
+    .modal-card { background: var(--surface); width: 100%; max-width: 440px; border-radius: var(--radius); padding: 2.5rem 1.8rem; border: 2px solid var(--border-strong); box-shadow: 0 20px 40px rgba(0,0,0,0.2); text-align: center; }
+    .modal-card h3 { font-family: 'DM Serif Display', serif; font-size: 28px; font-weight: 400; margin-bottom: 12px; color: var(--ink); }
     .modal-card p { font-size: 17px; font-weight: 500; color: var(--ink2); line-height: 1.5; margin-bottom: 2rem; }
     .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    
     .btn-sim { background: #0066cc; color: white; border: none; padding: 16px; border-radius: var(--radius-sm); font-size: 17px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 10px rgba(0,102,204,0.3); }
     .btn-nao { background: var(--ink); color: white; border: none; padding: 16px; border-radius: var(--radius-sm); font-size: 17px; font-weight: 700; cursor: pointer; }
-    
     .hidden { display: none !important; }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes pulseGlow {
-      0% { box-shadow: 0 0 0 0 rgba(45, 106, 79, 0.5); }
-      70% { box-shadow: 0 0 0 16px rgba(45, 106, 79, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(45, 106, 79, 0); }
-    }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulseGlow { 0% { box-shadow: 0 0 0 0 rgba(45, 106, 79, 0.5); } 70% { box-shadow: 0 0 0 16px rgba(45, 106, 79, 0); } 100% { box-shadow: 0 0 0 0 rgba(45, 106, 79, 0); } }
   </style>
 </head>
 <body>
@@ -165,7 +65,6 @@
 
   <div class="card">
     <div class="botoes-grid">
-      <!-- 1. Botão de Áudio -->
       <div class="item-botao">
         <button type="button" class="btn-redondo-gigante btn-audio" id="btnOuvirOrientacao" title="Ouvir orientações">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -179,7 +78,6 @@
 
       <div class="separador"></div>
 
-      <!-- 2. Botão Novo Agendamento -->
       <div class="item-botao">
         <a href="{% url 'home' %}" class="btn-redondo-gigante btn-novo" title="Novo agendamento">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -194,7 +92,6 @@
 
       <div class="separador"></div>
       
-      <!-- 3. Botão Editar Agendamento -->
       <div class="item-botao">
         <a href="{% url 'buscar_cadastro' %}" class="btn-redondo-gigante btn-editar" title="Editar agendamento ou cadastro">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -204,60 +101,20 @@
         </a>
         <span class="legenda-botao">Editar Agendamento ou Cadastro</span>
       </div>
-
       <div class="separador"></div>
-      
-    </div>
-  </div>
-</div>
-
-<div id="modalAudioIntro" class="modal-backdrop hidden">
-  <div class="modal-card">
-    <h3>Ajuda por Voz</h3>
-    <p>Deseja continuar ouvindo as instruções faladas para preencher o sistema?</p>
-    <div class="modal-actions">
-      <button type="button" class="btn-sim" id="btnSimAudio">Sim, continuar</button>
-      <button type="button" class="btn-nao" id="btnNaoAudio">Desativar áudio</button>
     </div>
   </div>
 </div>
 
 <script>
-  function falar(texto, callbackOnEnd) {
+  // Script de áudio simplificado para garantir estabilidade
+  document.getElementById("btnOuvirOrientacao").addEventListener("click", function() {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
-      const mensagem = new SpeechSynthesisUtterance(texto);
-      mensagem.lang = "pt-BR";
-      mensagem.rate = 1.0;
-      if (callbackOnEnd) mensagem.onend = callbackOnEnd;
-      window.speechSynthesis.speak(mensagem);
+      const ut = new SpeechSynthesisUtterance("Bem-vindo à Gaslu Funilaria. Toque no botão preto para fazer um novo agendamento ou no botão azul para alterar ou excluir um agendamento existente.");
+      ut.lang = 'pt-BR';
+      window.speechSynthesis.speak(ut);
     }
-  }
-
-  document.addEventListener("DOMContentLoaded", function() {
-    localStorage.removeItem("audioFoiPerguntado");
-    const modal = document.getElementById("modalAudioIntro");
-    const btnOuvir = document.getElementById("btnOuvirOrientacao");
-
-    btnOuvir.addEventListener("click", function() {
-      const textoIntro = "Bem vindo ao sistema de agendamento da Oficina Gaslu Funilaria e Pintura. Deseja continuar com o áudio de ajuda? Clique no botão azul para sim e no botão preto para não. ";
-      falar(textoIntro, function() {
-        if (modal) modal.classList.remove("hidden");
-      });
-    });
-
-    document.getElementById("btnSimAudio").addEventListener("click", function() {
-      localStorage.setItem("audioAjudaAtivo", "sim");
-      modal.classList.add("hidden");
-      falar("Ok, o áudio continua ativo, agora escolha entre as opções abaixo: o botão do meio é para Novos agendamentos e o último botão azul para Editar um Agendamento.");
-    });
-
-    document.getElementById("btnNaoAudio").addEventListener("click", function() {
-      localStorage.setItem("audioAjudaAtivo", "nao");
-      modal.classList.add("hidden");
-      falar("Certo, o áudio está desativado.");
-      window.speechSynthesis.cancel();
-    });
   });
 </script>
 </body>
