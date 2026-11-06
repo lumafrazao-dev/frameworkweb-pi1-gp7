@@ -1,134 +1,164 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gaslu Funilaria — Buscar Cadastro</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg: #F5F3EE; --surface: #FFFFFF; --surface2: #F0EDE7;
-      --border: rgba(0,0,0,0.10); --border-strong: rgba(0,0,0,0.18);
-      --ink: #1A1814; --ink2: #6B6760; --ink3: #9E9B97;
-      --radius: 12px; --radius-sm: 8px;
-    }
-    body {
-      font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink);
-      min-height: 100vh; padding: 2rem 1rem 4rem; display: flex; align-items: center; justify-content: center;
-    }
-    .page { max-width: 480px; width: 100%; }
-    .header { text-align: center; margin-bottom: 2rem; }
-    .header h1 { font-family: 'DM Serif Display', serif; font-size: 28px; font-weight: 400; margin-bottom: 6px; }
-    .header p { font-size: 14px; color: var(--ink2); }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gaslu Funilaria — Buscar Cadastro</title>
 
-    .btn-audio-icone {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 40px; height: 40px; background: var(--surface2); border: 0.5px solid var(--border-strong);
-      color: var(--ink); border-radius: 50%; cursor: pointer; margin-top: 10px;
-    }
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
 
-    .card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem; }
-    .field { margin-bottom: 1.25rem; }
-    .field label { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: var(--ink2); margin-bottom: 6px; }
-    .field input { width: 100%; padding: 11px 13px; font-size: 15px; border: 0.5px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--surface2); outline: none; }
-    .field input:focus { background: var(--surface); border-color: var(--ink); }
-    
-    .btn-primary { width: 100%; padding: 13px; background: var(--ink); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 15px; font-weight: 500; cursor: pointer; }
-    .btn-primary:hover { opacity: 0.82; }
-    
-    .btn-secondary { width: 100%; padding: 12px; background: transparent; color: var(--ink); border: 0.5px solid var(--border-strong); border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; text-align: center; text-decoration: none; display: block; margin-top: 8px; }
-    .btn-secondary:hover { background: var(--surface2); }
+<style>
+* { box-sizing:border-box; margin:0; padding:0; }
 
-    .btn-cancelar { width: 100%; padding: 12px; background: #c92a2a; color: #fff; border: none; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; text-align: center; text-decoration: none; display: block; margin-top: 8px; cursor: pointer; }
-    .btn-cancelar:hover { opacity: 0.85; }
+body {
+font-family:'DM Sans',sans-serif;
+background:#F5F3EE;
+color:#1A1814;
+min-height:100vh;
+padding:2rem 1rem;
+display:flex;
+align-items:center;
+justify-content:center;
+}
 
-    .modal-backdrop { position: fixed; inset: 0; background: rgba(26, 24, 20, 0.5); display: flex; align-items: center; justify-content: center; padding: 1rem; z-index: 999; }
-    .modal-card { background: var(--surface); width: 100%; max-width: 400px; border-radius: var(--radius); padding: 1.5rem; border: 0.5px solid var(--border); text-align: center; }
-    .modal-card h3 { font-family: 'DM Serif Display', serif; font-size: 22px; margin-bottom: 10px; }
-    .modal-card p { font-size: 14px; color: var(--ink2); margin-bottom: 1.5rem; }
-    .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .hidden { display: none !important; }
-  </style>
+.page { width:100%; max-width:480px; }
+
+.header { text-align:center; margin-bottom:2rem; }
+
+.header h1 {
+font-family:'DM Serif Display',serif;
+font-size:28px;
+font-weight:400;
+}
+
+.header p { margin-top:8px; color:#6B6760; }
+
+.card {
+background:white;
+border:1px solid rgba(0,0,0,.12);
+border-radius:12px;
+padding:1.5rem;
+}
+
+.field { margin-bottom:1.2rem; }
+
+.field label {
+display:block;
+font-size:13px;
+font-weight:500;
+margin-bottom:6px;
+color:#6B6760;
+}
+
+.field input {
+width:100%;
+padding:12px;
+font-size:15px;
+border:1px solid rgba(0,0,0,.2);
+border-radius:8px;
+background:#F0EDE7;
+}
+
+button, a { font-family:inherit; cursor:pointer; }
+
+.btn-primary {
+width:100%;
+padding:13px;
+background:#1A1814;
+color:white;
+border:0;
+border-radius:8px;
+font-size:15px;
+}
+
+.btn-secondary {
+display:block;
+width:100%;
+padding:12px;
+text-align:center;
+text-decoration:none;
+color:#1A1814;
+border:1px solid rgba(0,0,0,.2);
+border-radius:8px;
+margin-top:8px;
+}
+
+.alert {
+background:#fff0ed;
+color:#a32620;
+padding:12px;
+border-radius:8px;
+margin-bottom:15px;
+font-size:14px;
+}
+</style>
 </head>
+
 <body>
+
 <div class="page">
-  <div class="header">
-    <h1>Editar Agendamento</h1>
-    <p>Insira seus dados para localizar o registro</p>
-    
-    <button type="button" class="btn-audio-icone" id="btnReativarVozBusca" title="Ouvir orientações">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px;">
-        <path d="M6 9H2v6h4l5 5V4L6 9z"></path>
-        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-      </svg>
-    </button>
-  </div>
 
-  <div class="card">
-    <!-- ATENÇÃO: Adicionado o action apontando para a url 'buscar_cadastro' -->
-    <form method="POST" action="{% url 'buscar_cadastro' %}">
-      {% csrf_token %}
-      <div class="field">
-        <label>Nome completo cadastrado</label>
-        <input type="text" name="nome_busca" id="nome_busca" placeholder="Ex: João Silva" required>
-      </div>
-      
-      <button type="submit" class="btn-primary">Buscar Informações</button>
-      
-      <button type="button" class="btn-cancelar" onclick="confirmarCancelamento()">Cancelar Agendamento</button>
+<header class="header">
+<h1>Localizar Agendamento</h1>
+<p>Informe seu nome completo para localizar seu cadastro</p>
+</header>
 
-      <a href="{% url 'escolher_opcao' %}" class="btn-secondary">Voltar ao início</a>
-    </form>
-  </div>
-</div>
+<div class="card">
 
 {% if erro %}
-<div class="modal-backdrop">
-  <div class="modal-card">
-    <h3>Atenção</h3>
-    <p>Dados inválidos ou inexistentes. Verifique as informações e tente novamente ou crie um novo cadastro.</p>
-    <div class="modal-actions">
-      <!-- ATENÇÃO: Nome da url corrigido para 'buscar_cadastro' -->
-      <a href="{% url 'buscar_cadastro' %}" class="btn-secondary" style="margin-top:0;">Voltar</a>
-      <a href="{% url 'home' %}" class="btn-primary" style="text-decoration:none; display:flex; align-items:center; justify-content:center;">Criar novo</a>
-    </div>
-  </div>
+<div class="alert">
+Não encontramos um agendamento com esse nome.
+Confira o nome completo e tente novamente.
 </div>
 {% endif %}
 
+<form method="POST" action="{% url 'buscar_cadastro' %}">
+
+{% csrf_token %}
+
+<div class="field">
+<label>Nome completo cadastrado</label>
+
+<input
+type="text"
+name="nome_busca"
+id="nome_busca"
+placeholder="Ex: João Silva"
+autocomplete="name"
+required>
+</div>
+
+<button type="submit" class="btn-primary">
+Buscar meu agendamento
+</button>
+
+</form>
+
+<a href="{% url 'escolher_opcao' %}" class="btn-secondary">
+Voltar ao início
+</a>
+
+</div>
+</div>
+
 <script>
-  function falarTextoBusca(texto) {
-    if (localStorage.getItem("audioAjudaAtivo") === "nao") return;
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(texto);
-      utterance.lang = 'pt-BR';
-      utterance.rate = 1.0;
-      window.speechSynthesis.speak(utterance);
-    }
-  }
+function falar(texto) {
+if (
+localStorage.getItem("audioAjudaAtivo") !== "nao" &&
+"speechSynthesis" in window
+) {
+speechSynthesis.cancel();
 
-  let ultimoCampoBuscaFalado = "";
-  document.getElementById("nome_busca").addEventListener("focus", function() {
-    if (localStorage.getItem("audioAjudaAtivo") === "nao") return;
-    if (ultimoCampoBuscaFalado === "nome_busca") return;
-    ultimoCampoBuscaFalado = "nome_busca";
-    falarTextoBusca("Insira o nome completo cadastrado para localizar o seu agendamento.");
-  });
+const voz = new SpeechSynthesisUtterance(texto);
+voz.lang = "pt-BR";
+speechSynthesis.speak(voz);
+}
+}
 
-  document.getElementById("btnReativarVozBusca").addEventListener("click", function() {
-    localStorage.setItem("audioAjudaAtivo", "sim");
-    falarTextoBusca("Áudio de ajuda ativado.");
-  });
-
-  function confirmarCancelamento() {
-    if (confirm("Tem certeza que deseja cancelar este agendamento?")) {
-      falarTextoBusca("Agendamento cancelado.");
-      window.location.href = "{% url 'escolher_opcao' %}";
-    }
-  }
+document.getElementById("nome_busca").addEventListener("focus", function() {
+falar("Digite seu nome completo cadastrado para localizar seu agendamento.");
+});
 </script>
+
 </body>
 </html>
