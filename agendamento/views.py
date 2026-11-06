@@ -127,38 +127,21 @@ def buscar_cadastro_para_editar(request):
     agendamentos = []
 
     if request.method == "POST":
+        # Pega apenas o nome digitado pelo cliente
         nome = request.POST.get("nome_busca", "").strip()
 
         if nome:
+            # Busca no banco SQLite apenas pelo campo nome (ignorando maiúsculas/minúsculas)
             agendamentos = list(
                 Agendamento.objects.filter(
-                    nome__iexact=nome
+                    nome__icontains=nome
                 ).order_by("-data", "-horario")
             )
 
-            if agendamentos:
-                request.session["cliente_nome"] = nome
-                request.session["cliente_telefone"] = normalizar_telefone(
-                    agendamentos[0].telefone
-                )
-            else:
+            if not agendamentos:
                 erro = True
         else:
             erro = True
-
-    else:
-        nome = request.session.get("cliente_nome", "")
-        telefone = request.session.get("cliente_telefone", "")
-
-        if nome and telefone:
-            encontrados = Agendamento.objects.filter(
-                nome__iexact=nome
-            ).order_by("-data", "-horario")
-
-            agendamentos = [
-                a for a in encontrados
-                if normalizar_telefone(a.telefone) == telefone
-            ]
 
     return render(request, "busca_cadastro.html", {
         "erro": erro,
