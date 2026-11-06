@@ -123,20 +123,28 @@ def escolher_opcao(request):
 
 def buscar_cadastro_para_editar(request):
     erro = False
+
     if request.method == "POST":
         nome_busca = request.POST.get("nome_busca", "").strip()
-        print(f"DEBUG - Nome digitado: '{nome_busca}'")
-        
-        agendamento = Agendamento.objects.filter(nome__icontains=nome_busca).order_by('-data').first()
-        print(f"DEBUG - Agendamento encontrado: {agendamento}")
-        
-        if agendamento:
-            return redirect('editar_agendamento', pk=agendamento.pk)
-        else:
-            erro = True
 
-    return render(request, "buscar_cadastro.html", {"erro": erro})
+        if nome_busca:
+            agendamentos = Agendamento.objects.filter(
+                nome__iexact=nome_busca
+            ).order_by("-data", "-horario")
 
+            agendamento = agendamentos.first()
+
+            if agendamento:
+                return redirect(
+                    "editar_agendamento",
+                    pk=agendamento.pk
+                )
+
+        erro = True
+
+    return render(request, "busca_cadastro.html", {
+        "erro": erro
+    })
 
 def editar_agendamento(request, pk):
     agendamento = get_object_or_404(Agendamento, pk=pk)
