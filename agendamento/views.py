@@ -121,29 +121,48 @@ def escolher_opcao(request):
     return render(request, "escolher_opcao.html")
 
 
+
 def buscar_cadastro_para_editar(request):
     erro = False
+    agendamentos = []
 
     if request.method == "POST":
-        nome_busca = request.POST.get("nome_busca", "").strip()
+        nome = request.POST.get("nome_busca", "").strip()
 
-        if nome_busca:
-            agendamentos = Agendamento.objects.filter(
-                nome__iexact=nome_busca
+        if nome:
+            agendamentos = list(
+                Agendamento.objects.filter(
+                    nome__iexact=nome
+                ).order_by("-data", "-horario")
+            )
+
+            if agendamentos:
+                request.session["cliente_nome"] = nome
+                request.session["cliente_telefone"] = normalizar_telefone(
+                    agendamentos[0].telefone
+                )
+            else:
+                erro = True
+        else:
+            erro = True
+
+    else:
+        nome = request.session.get("cliente_nome", "")
+        telefone = request.session.get("cliente_telefone", "")
+
+        if nome and telefone:
+            encontrados = Agendamento.objects.filter(
+                nome__iexact=nome
             ).order_by("-data", "-horario")
 
-            agendamento = agendamentos.first()
-
-            if agendamento:
-                return redirect(
-                    "editar_agendamento",
-                    pk=agendamento.pk
-                )
-
-        erro = True
+            agendamentos = [
+                a for a in encontrados
+                if normalizar_telefone(a.telefone) == telefone
+            ]
 
     return render(request, "busca_cadastro.html", {
-        "erro": erro
+        "erro": erro,
+        "agendamentos": agendamentos,
     })
 
 def editar_agendamento(request, pk):
