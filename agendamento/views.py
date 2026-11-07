@@ -141,7 +141,7 @@ def buscar_cadastro_para_editar(request):
         else:
             erro = True
 
-    return render(request, "agendamento/busca_cadastro.html", {
+    return render(request, "agendamento/buscar_cadastro.html", {
         "erro": erro,
         "agendamentos": agendamentos,
     })
