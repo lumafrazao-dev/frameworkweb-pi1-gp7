@@ -86,11 +86,15 @@ def home(request):
             "nome": nome,
             "telefone": telefone,
             "placa": placa,
-            "data": data_str
+            "data": data_str,
+            "horario": horario
         }
+        
         if data_str:
             data = datetime.strptime(data_str, "%Y-%m-%d").date()
-            if horario:
+            
+            # Grava no banco se houver nome, data e horário válidos
+            if horario and nome:
                 existe = Agendamento.objects.filter(data=data, horario=horario).exists()
                 if not existe:
                     Agendamento.objects.create(
@@ -101,21 +105,15 @@ def home(request):
                         horario=horario
                     )
                     agendamento_confirmado = True
-                return render(request, "agendamento.html", {
-                    "horarios": horarios,
-                    "dados": dados,
-                    "agendamento_confirmado": agendamento_confirmado
-                })
             
             if data.weekday() != 6:
                 horarios = gerar_horarios(data)
                 
-    return render(request, "agendamento.html", {
+    return render(request, "agendamento/agendamento.html", {
         "horarios": horarios,
         "dados": dados,
         "agendamento_confirmado": agendamento_confirmado
     })
-
 
 def escolher_opcao(request):
     return render(request, "escolher_opcao.html")
